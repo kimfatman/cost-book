@@ -70,6 +70,7 @@ cost-book-mini/
 | [docs/05-development-guide.md](docs/05-development-guide.md) | 二次开发指南：新增页面/数据/功能的完整步骤 |
 | [docs/06-maintenance.md](docs/06-maintenance.md) | 维护手册：常见问题、兼容性、上线检查清单 |
 | [docs/07-wechat-cloud-guide.md](docs/07-wechat-cloud-guide.md) | 微信云开发接入改造方案（登录/16 接口逐函数对照/行业引导/定时报表） |
+| [docs/09-prototype-closure-tasks.md](docs/09-prototype-closure-tasks.md) | 原型收口阶段任务清单、优先级、依赖关系与验收标准 |
 
 ## 版本
 
