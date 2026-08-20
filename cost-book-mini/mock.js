@@ -205,6 +205,7 @@ window.DB = {
   industryTemplates: {
     canteen: {
       id: 'canteen', name: '餐饮', desc: '餐厅 / 小吃 / 饮品店', icon: 'utensils',
+      noun: '菜品', productIcon: 'utensils', alertHint: '食材价格波动时推送',
       categories: [
         { id: 't1', name: '食材采购', color: '#1677FF' },
         { id: 't2', name: '人力工资', color: '#12B76A' },
@@ -223,6 +224,7 @@ window.DB = {
     },
     retail: {
       id: 'retail', name: '零售', desc: '超市 / 便利店 / 服装店', icon: 'store',
+      noun: '商品', productIcon: 'shopping-cart', alertHint: '库存损耗与滞销时推送',
       categories: [
         { id: 't1', name: '商品采购', color: '#1677FF' },
         { id: 't2', name: '人力工资', color: '#12B76A' },
@@ -240,6 +242,7 @@ window.DB = {
     },
     ecommerce: {
       id: 'ecommerce', name: '电商', desc: '网店 / 直播 / 社交电商', icon: 'shopping-cart',
+      noun: '商品', productIcon: 'shopping-cart', alertHint: '退款、广告与平台费用异常时推送',
       categories: [
         { id: 't1', name: '商品采购', color: '#1677FF' },
         { id: 't2', name: '平台佣金', color: '#F79009' },
@@ -259,6 +262,7 @@ window.DB = {
     },
     fresh: {
       id: 'fresh', name: '生鲜果蔬', desc: '菜场 / 水果店 / 水产', icon: 'shopping-basket',
+      noun: '商品', productIcon: 'shopping-cart', alertHint: '损耗报损与冷链成本异常时推送',
       categories: [
         { id: 't1', name: '进货采购', color: '#0D7261' },
         { id: 't2', name: '损耗报损', color: '#C24A38' },
@@ -276,6 +280,7 @@ window.DB = {
     },
     beauty: {
       id: 'beauty', name: '美业服务', desc: '美发 / 美甲 / 美容 / 预约服务', icon: 'scissors',
+      noun: '服务项目', productIcon: 'scissors', alertHint: '预约空档与耗材异常时推送',
       categories: [
         { id: 't1', name: '产品耗材', color: '#1677FF' },
         { id: 't2', name: '人力工资', color: '#12B76A' },
@@ -293,6 +298,7 @@ window.DB = {
     },
     factory: {
       id: 'factory', name: '小型制造', desc: '加工 / 作坊 / 工厂', icon: 'factory',
+      noun: '商品', productIcon: 'shopping-cart', alertHint: '废品返工与设备停机异常时推送',
       categories: [
         { id: 't1', name: '原材料', color: '#0D7261' },
         { id: 't2', name: '人力工资', color: '#3E6FA8' },
@@ -310,6 +316,7 @@ window.DB = {
     },
     service: {
       id: 'service', name: '其他服务', desc: '培训 / 维修 / 家政', icon: 'sparkles',
+      noun: '服务项目', productIcon: 'shopping-cart', alertHint: '工时闲置与爽约损失异常时推送',
       categories: [
         { id: 't1', name: '人力工资', color: '#3E6FA8' },
         { id: 't2', name: '房租水电', color: '#B97A12' },
@@ -327,6 +334,7 @@ window.DB = {
     // 商贸 · 摆摊商贩：为地摊/夜市/集市商贩优化的极简模型
     stall: {
       id: 'stall', name: '小商贩', desc: '地摊 / 夜市 / 集市摆摊', icon: 'shopping-cart',
+      noun: '商品', productIcon: 'shopping-cart', alertHint: '进货损耗与摊位费异常时推送',
       categories: [
         { id: 't1', name: '进货成本', color: '#1677FF' },
         { id: 't2', name: '摊位费', color: '#F79009' },

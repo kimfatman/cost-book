@@ -47,22 +47,25 @@
     return (ob && ob.industry) || (DB.store && DB.store.industry) || 'canteen';
   }
 
+  /* 当前行业模板（字段驱动：noun / productIcon / alertHint 均已下沉到模板数据，无散落分支） */
+  function industryTemplate(id) {
+    var key = id || currentIndustryId();
+    return (DB.industryTemplates && DB.industryTemplates[key]) || null;
+  }
+
   function industryNoun() {
-    return currentIndustryId() === 'canteen' ? '菜品' : (currentIndustryId() === 'beauty' ? '服务项目' : '商品');
+    var t = industryTemplate();
+    return (t && t.noun) || '商品';
   }
 
   function industryProductIcon() {
-    return currentIndustryId() === 'canteen' ? 'utensils' : (currentIndustryId() === 'beauty' ? 'scissors' : 'shopping-cart');
+    var t = industryTemplate();
+    return (t && t.productIcon) || 'shopping-cart';
   }
 
   function industryAlertHint() {
-    var id = currentIndustryId();
-    if (id === 'canteen') return '食材价格波动时推送';
-    if (id === 'retail') return '库存损耗与滞销时推送';
-    if (id === 'ecommerce') return '退款、广告与平台费用异常时推送';
-    if (id === 'beauty') return '预约空档与耗材异常时推送';
-    if (id === 'stall') return '进货损耗与摊位费异常时推送';
-    return '经营成本出现异常时推送';
+    var t = industryTemplate();
+    return (t && t.alertHint) || '经营成本出现异常时推送';
   }
 
   function catColor(name) {

@@ -31,7 +31,10 @@
   id: 'canteen',            // 模板标识（= 行业 key）
   name: '餐饮',             // 行业显示名（用于 store.type、Step3 预览）
   desc: '餐厅 / 小吃 / 饮品店', // 引导卡片副标题
-  icon: 'utensils',         // Lucide 图标名（引导卡片 / 我的页头像 / 空状态）
+  icon: 'utensils',         // 行业图标（引导卡片 / 我的页头像）
+  noun: '菜品',             // 成本对象名词（菜品/商品/服务项目，页面文案驱动）
+  productIcon: 'utensils',  // 产品列表图标（菜品成本页/空状态/列表行）
+  alertHint: '食材价格波动时推送', // 成本异常提醒描述（我的页）
   categories: [             // 成本分类模板（记账页 chip、分类管理、图表着色）
     { id: 't1', name: '食材采购', color: '#1677FF' },
     // ... 5-8 项
@@ -42,6 +45,10 @@
   }
 }
 ```
+
+> **字段驱动约定**：`noun` / `productIcon` / `alertHint` 均下沉到模板数据（v2.4.2 起），
+> `app.js` 的 `industryNoun()` / `industryProductIcon()` / `industryAlertHint()` 直接读模板字段，
+> 新增行业不再需要改 if-else 分支，仅需补模板字段即可。
 
 ### 1.3 分类配色板现状（⚠️ 注意）
 
@@ -159,9 +166,9 @@ var keys = ['canteen', 'retail', 'ecommerce', 'beauty', 'stall'];
 
 | 能力 | 位置 | 分支逻辑 |
 |---|---|---|
-| 名词适配 `industryNoun()` | app.js | 餐饮→`菜品` / 美业→`服务项目` / 其他→`商品` |
-| 图标适配 `industryProductIcon()` | app.js | 餐饮→`utensils` / 美业→`scissors` / 其他→`shopping-cart` |
-| 提醒文案 `industryAlertHint()` | app.js | 按 5+ 行业返回不同推送描述 |
+| 名词适配 `industryNoun()` | app.js | 读模板字段 `noun`（fallback `商品`） |
+| 图标适配 `industryProductIcon()` | app.js | 读模板字段 `productIcon`（fallback `shopping-cart`） |
+| 提醒文案 `industryAlertHint()` | app.js | 读模板字段 `alertHint`（fallback 通用文案） |
 | 隐性成本模型 | hidden-cost.js `MODELS` | 按 key 路由 8 个行业模型（见 §1.1） |
 | 菜品成本页文案 | subpages.js | 搜索占位、总数/超支名词、BOM 标签（`食材 BOM 合计`/`成本构成`）、按钮（`添加用料`/`添加成本项`）、空状态 |
 | 我的页 | app.js | 店铺卡行业图标、经营工具入口 label（`菜品成本卡`/`服务项目成本卡`） |
@@ -179,15 +186,15 @@ var keys = ['canteen', 'retail', 'ecommerce', 'beauty', 'stall'];
 | 4 | 分类配色新旧两套并存 | 模板改造未覆盖 fresh/factory/service | 统一色板 |
 | 5 | 隐藏行业（fresh/factory/service）无法经 UI 选择 | `buildStep1` keys 未包含 | 如需开放，加 key 即可 |
 | 6 | 引导向导进度不持久化（刷新丢失） | `obState` 为内存态，仅完成时 save | 演示可接受，接后端后建议服务端会话 |
-| 7 | 行业依赖为"手写 if-else 分支"（noun/icon/alertHint） | 未做成模板字段 | 可把 `noun`/`icon`/`alertHint` 下沉到模板数据，消除散落分支 |
+| 7 | ~~行业依赖为手写 if-else 分支（noun/icon/alertHint）~~ | **已修复（v2.4.2）**：三个字段下沉到模板数据，`app.js` 统一读字段 | — |
 
 ---
 
 ## 六、扩展新行业的标准步骤（Checklist）
 
-1. `mock.js → DB.industryTemplates` 增加模板：`{ id, name, desc, icon, categories[], hiddenCost{} }`（分类色用新色板）
+1. `mock.js → DB.industryTemplates` 增加模板：`{ id, name, desc, icon, noun, productIcon, alertHint, categories[], hiddenCost{} }`（分类色用新色板）
 2. `hidden-cost.js → MODELS` 增加同名模型函数（消费 `hiddenCost` 参数，输出 `item[]`）
 3. `onboarding.js → buildStep1 keys` 加入 key（可选展示）
-4. `app.js → industryAlertHint()` 增加提醒文案分支；如名词/图标特殊，同步 `industryNoun()` / `industryProductIcon()`
+4. `app.js` 无需改 if-else（noun/productIcon/alertHint 已字段驱动）；如行业名词/图标特殊，直接在模板字段配置
 5. `docs/08` 补充该行业模型公式与基准；`docs/03` 补充模板结构说明
 6. 验证：引导可选 → 保存 → 分类/文案/隐性成本模型均切换正确
