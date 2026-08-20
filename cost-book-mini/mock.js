@@ -16,7 +16,7 @@ window.DB = {
     lastRatio: 58.2, ratioDelta: 1.8,
     prevRevenue: 201800, revenueDelta: 6.2,
     prevProfit: 81260, profitDelta: 5.4,
-    recordCount: 19
+    recordCount: 18
   },
   // 成本分类（含色点，用于列表与图表）
   categories: [
@@ -51,9 +51,9 @@ window.DB = {
     { id: 'C20260630-0064', date: '2026-06-30', type: '支出', cat: '营销推广', amount: 1500, merchant: '抖音本地生活', note: '6 月团购核销分成', status: '已核算', attach: false },
     { id: 'C20260628-0063', date: '2026-06-28', type: '支出', cat: '食材采购', amount: 5280, merchant: '川味食材批发', note: '6 月末集中备货', status: '已核算', attach: true }
   ],
-  // 菜品成本卡（单位成本 = 材料 + 人工 + 分摊）
+  // 菜品成本卡（单位成本 = 材料 + 人工 + 分摊；ratio = 成本率 = cost / price × 100；status：成本率 > 45 为超支）
   products: [
-    { id: 'p1', name: '水煮鱼', cat: '热菜', price: 68, cost: 24.6, ratio: 63.8, status: '达标', bomTotal: 18.6, labor: 4.2, overhead: 1.8,
+    { id: 'p1', name: '水煮鱼', cat: '热菜', price: 68, cost: 24.6, ratio: 36.2, status: '达标', bomTotal: 18.6, labor: 4.2, overhead: 1.8,
       items: [
         { name: '黑鱼', spec: '750g', qty: '1 条', amount: 12.9 },
         { name: '黄豆芽', spec: '300g', qty: '1 份', amount: 1.6 },
@@ -61,7 +61,7 @@ window.DB = {
         { name: '食用油及辅料', spec: '', qty: '1 份', amount: 1.7 }
       ],
       history: [26.1, 25.8, 26.4, 25.9, 25.2, 24.6] },
-    { id: 'p2', name: '毛血旺', cat: '热菜', price: 58, cost: 22.9, ratio: 60.5, status: '达标', bomTotal: 16.1, labor: 4.0, overhead: 2.8,
+    { id: 'p2', name: '毛血旺', cat: '热菜', price: 58, cost: 22.9, ratio: 39.5, status: '达标', bomTotal: 16.1, labor: 4.0, overhead: 2.8,
       items: [
         { name: '毛肚', spec: '250g', qty: '1 份', amount: 8.5 },
         { name: '鸭血', spec: '400g', qty: '1 份', amount: 2.2 },
@@ -69,42 +69,42 @@ window.DB = {
         { name: '豆芽/莴笋', spec: '', qty: '1 份', amount: 2.0 }
       ],
       history: [23.4, 23.1, 23.0, 22.8, 23.2, 22.9] },
-    { id: 'p3', name: '回锅肉', cat: '热菜', price: 42, cost: 17.4, ratio: 58.6, status: '达标', bomTotal: 13.8, labor: 2.8, overhead: 0.8,
+    { id: 'p3', name: '回锅肉', cat: '热菜', price: 42, cost: 17.4, ratio: 41.4, status: '达标', bomTotal: 13.8, labor: 2.8, overhead: 0.8,
       items: [
         { name: '猪五花', spec: '400g', qty: '1 份', amount: 11.2 },
         { name: '青蒜/青椒', spec: '', qty: '1 份', amount: 1.6 },
         { name: '豆瓣酱辅料', spec: '', qty: '1 份', amount: 1.0 }
       ],
       history: [17.9, 17.6, 17.5, 17.4, 17.5, 17.4] },
-    { id: 'p4', name: '酸菜鱼', cat: '热菜', price: 66, cost: 23.8, ratio: 63.9, status: '达标', bomTotal: 18.8, labor: 3.4, overhead: 1.6,
+    { id: 'p4', name: '酸菜鱼', cat: '热菜', price: 66, cost: 23.8, ratio: 36.1, status: '达标', bomTotal: 18.8, labor: 3.4, overhead: 1.6,
       items: [
         { name: '花鲢', spec: '800g', qty: '1 份', amount: 13.6 },
         { name: '酸菜', spec: '400g', qty: '1 份', amount: 3.2 },
         { name: '配菜辅料', spec: '', qty: '1 份', amount: 2.0 }
       ],
       history: [24.9, 24.5, 24.2, 24.0, 23.9, 23.8] },
-    { id: 'p5', name: '口水鸡', cat: '凉菜', price: 36, cost: 12.1, ratio: 66.4, status: '达标', bomTotal: 10.9, labor: 1.2, overhead: 0,
+    { id: 'p5', name: '口水鸡', cat: '凉菜', price: 36, cost: 12.1, ratio: 33.6, status: '达标', bomTotal: 10.9, labor: 1.2, overhead: 0,
       items: [
         { name: '三黄鸡', spec: '600g', qty: '1 份', amount: 8.4 },
         { name: '红油料汁', spec: '', qty: '1 份', amount: 1.5 },
         { name: '配菜', spec: '', qty: '1 份', amount: 1.0 }
       ],
       history: [12.6, 12.4, 12.3, 12.2, 12.2, 12.1] },
-    { id: 'p6', name: '担担面', cat: '主食', price: 18, cost: 6.3, ratio: 65.0, status: '超支', bomTotal: 5.5, labor: 0.8, overhead: 0,
+    { id: 'p6', name: '担担面', cat: '主食', price: 18, cost: 9.4, ratio: 52.2, status: '超支', bomTotal: 7.2, labor: 2.0, overhead: 0.2,
       items: [
-        { name: '碱水面', spec: '250g', qty: '1 份', amount: 1.8 },
-        { name: '肉臊', spec: '80g', qty: '1 份', amount: 2.6 },
-        { name: '花生碎/佐料', spec: '', qty: '1 份', amount: 1.1 }
+        { name: '碱水面', spec: '250g', qty: '1 份', amount: 2.4 },
+        { name: '肉臊', spec: '80g', qty: '1 份', amount: 3.4 },
+        { name: '花生碎/佐料', spec: '', qty: '1 份', amount: 1.4 }
       ],
-      history: [5.9, 6.0, 6.1, 6.2, 6.3, 6.3] },
-    { id: 'p7', name: '红糖糍粑', cat: '主食', price: 16, cost: 4.8, ratio: 70.0, status: '达标', bomTotal: 2.2, labor: 2.6, overhead: 0,
+      history: [7.8, 8.0, 8.4, 8.8, 9.1, 9.4] },
+    { id: 'p7', name: '红糖糍粑', cat: '主食', price: 16, cost: 4.8, ratio: 30.0, status: '达标', bomTotal: 2.2, labor: 2.6, overhead: 0,
       items: [
         { name: '糯米', spec: '200g', qty: '1 份', amount: 0.9 },
         { name: '红糖浆', spec: '', qty: '1 份', amount: 0.8 },
         { name: '黄豆粉', spec: '', qty: '1 份', amount: 0.5 }
       ],
       history: [5.0, 4.9, 4.9, 4.8, 4.9, 4.8] },
-    { id: 'p8', name: '桂花酸梅汤', cat: '饮品', price: 12, cost: 2.9, ratio: 75.8, status: '达标', bomTotal: 2.3, labor: 0.6, overhead: 0,
+    { id: 'p8', name: '桂花酸梅汤', cat: '饮品', price: 12, cost: 2.9, ratio: 24.2, status: '达标', bomTotal: 2.3, labor: 0.6, overhead: 0,
       items: [
         { name: '乌梅/山楂', spec: '', qty: '1 份', amount: 1.1 },
         { name: '冰糖', spec: '', qty: '1 份', amount: 0.5 },
@@ -145,13 +145,13 @@ window.DB = {
     cur: { label: '本月', cost: 128640, revenue: 214300, ratio: 60.0, ratioDelta: 1.8 },
     last: { label: '上月', cost: 116980, revenue: 198400, ratio: 58.2, ratioDelta: -1.8 }
   },
-  // TOP5 高成本菜品
+  // TOP5 高成本菜品（ratio 为成本率，与 products 口径一致）
   topProducts: [
-    { name: '水煮鱼', cost: 24.6, ratio: 63.8, delta: -1.5 },
-    { name: '酸菜鱼', cost: 23.8, ratio: 63.9, delta: -0.4 },
-    { name: '毛血旺', cost: 22.9, ratio: 60.5, delta: -0.3 },
-    { name: '回锅肉', cost: 17.4, ratio: 58.6, delta: -0.1 },
-    { name: '口水鸡', cost: 12.1, ratio: 66.4, delta: -0.5 }
+    { name: '水煮鱼', cost: 24.6, ratio: 36.2, delta: -1.5 },
+    { name: '酸菜鱼', cost: 23.8, ratio: 36.1, delta: -0.4 },
+    { name: '毛血旺', cost: 22.9, ratio: 39.5, delta: -0.3 },
+    { name: '回锅肉', cost: 17.4, ratio: 41.4, delta: -0.1 },
+    { name: '口水鸡', cost: 12.1, ratio: 33.6, delta: -0.5 }
   ],
   // 供应商（本月应付合计 = 86,240）
   suppliers: [

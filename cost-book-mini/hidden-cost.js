@@ -63,22 +63,13 @@
       var loss = lossActual || purchase * c.foodLoss.mid / 100;
       var lossHealth = lossActual ? rateHealth(lossActual / purchase * 100, c.foodLoss) : 72;
 
-      /* 2. 成本率漏损：实际成本率 vs 理论成本率（BOM）
-         BOM 仅含配方小料时理论成本率偏低（不完整），因此用行业理论成本率区间
-         （食材 30-40% + 人工房租等 25-35%）作为参照，只对超出区间的部分计漏损 */
-      var theoCost = 0, theoRev = 0;
-      DB.products.forEach(function (p) {
-        theoCost += (p.bomTotal || 0) + (p.labor || 0) + (p.overhead || 0);
-        theoRev += p.price || 0;
-      });
-      var theoRatio = theoRev ? theoCost / theoRev * 100 : 0;
+      /* 2. 成本率漏损：实际成本率 vs 餐饮全口径行业基准区间（55-70%，含房租/营销/折旧等固定成本）
+         只对超出基准上限的部分计漏损，避免把固定成本误判为管理漏损（修复口径：不再叠加 BOM 理论成本率） */
       var actualRatio = rev ? m.cost / rev * 100 : 0;
-      /* 理论完整成本率：小料 BOM 成本率 + 人工房租 25-35% 区间中值 */
-      var fullRatio = theoRatio + 30;
-      /* 漏损 = 实际成本率超出"理论完整成本率 + 2pp 合理波动"的部分 */
-      var leakPp = Math.max(actualRatio - fullRatio - 2, 0);
+      var IND_LEAK = { low: 55, high: 70 };   // 餐饮全口径成本率基准区间
+      var leakPp = Math.max(actualRatio - IND_LEAK.high, 0);
       var leak = leakPp > 0 ? rev * leakPp / 100 : 0;
-      var leakHealth = leakPp <= 2 ? 88 : (leakPp <= 4 ? 70 : 45);
+      var leakHealth = actualRatio <= 62 ? 88 : (actualRatio <= IND_LEAK.high ? 78 : (leakPp <= 4 ? 58 : 38));
 
       /* 3. 水电隐性浪费 */
       var util = catTotal(['房租', '水电']) || m.cost * 0.12;
@@ -95,9 +86,9 @@
           '合格线 ' + c.foodLoss.low + '-' + c.foodLoss.high + '%', lossHealth,
           lossActual ? '已按实际报损记录估算，建议增加每日盘点校准' : '建议登记每日损耗与盘点差异，替换基准估算'),
         item('leak', '成本率漏损', 'percent', leak,
-          '(实际成本率 ' + actualRatio.toFixed(1) + '% − 理论完整成本率 ' + fullRatio.toFixed(1) + '%) × 营收',
-          'BOM 小料 + 人工房租约 30%', leakHealth,
-          leakPp > 2 ? '实际成本率显著高于理论口径，检查称重误差、跑单与采购溢价' : '成本率与理论口径一致，控制良好'),
+          '实际成本率 ' + actualRatio.toFixed(1) + '% − 行业基准上限 ' + IND_LEAK.high + '%',
+          '餐饮全口径基准 ' + IND_LEAK.low + '-' + IND_LEAK.high + '%', leakHealth,
+          leakPp > 2 ? '实际成本率显著高于行业基准上限，检查称重误差、跑单与采购溢价' : '成本率处于行业基准区间内，控制良好；环比 +' + (m.ratioDelta || 0) + 'pp 需关注上升趋势'),
         item('utility', '水电隐性浪费', 'zap', utilLoss,
           '房租水电 ¥' + fmtMoney0(util) + ' × 隐性浪费率 ' + (c.utility.rate * 100) + '%',
           '未计量浪费约 8-12%', utilHealth, '待机能耗与冷库/设备空转是主要漏损点，可加装分项计量'),

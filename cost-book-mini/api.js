@@ -5,6 +5,44 @@
 
   function ok(data) { return { code: 0, data: data }; }
 
+  function round2(n) { return Math.round(n * 100) / 100; }
+  function round1(n) { return Math.round(n * 10) / 10; }
+
+  /* 本月口径判断（演示数据仅 2026-07 记账联动本月指标） */
+  function isCurMonth(date) { return String(date || '').indexOf('2026-07') === 0; }
+
+  /* 菜品成本率与状态（与 subpages.js deleteBom 共用同一规则） */
+  function recalcProduct(p) {
+    p.bomTotal = round2((p.items || []).reduce(function (s, it) { return s + (Number(it.amount) || 0); }, 0));
+    p.cost = round2(p.bomTotal + (p.labor || 0) + (p.overhead || 0));
+    p.ratio = Math.round((p.cost / p.price) * 1000) / 10;   // 成本率 = cost / price
+    p.status = p.ratio > 45 ? '超支' : '达标';
+    return p;
+  }
+
+  /* U3 修复：记账新增/删除后同步本月经营指标与成本构成 */
+  function syncMonth(rec, delta) {
+    if (!rec || !isCurMonth(rec.date)) return;
+    var m = DB.month;
+    var amt = Number(rec.amount) || 0;
+    if (rec.type === '收入') {
+      m.revenue = Math.max(0, round2(m.revenue + delta * amt));
+    } else {
+      m.cost = Math.max(0, round2(m.cost + delta * amt));
+      var s = null;
+      DB.share.forEach(function (x) { if (x.cat === rec.cat) s = x; });
+      if (s) {
+        s.amount = Math.max(0, round2(s.amount + delta * amt));
+        var total = DB.share.reduce(function (sum, x) { return sum + x.amount; }, 0);
+        DB.share.forEach(function (x) { x.pct = total > 0 ? round1(x.amount / total * 100) : 0; });
+      }
+    }
+    m.profit = round2(m.revenue - m.cost);
+    m.ratio = m.revenue > 0 ? round1(m.cost / m.revenue * 100) : 0;
+    m.budgetUsed = DB.store.budget > 0 ? round1(m.cost / DB.store.budget * 100) : 0;
+    m.recordCount = Math.max(0, m.recordCount + delta);
+  }
+
   var api = {
     // TODO: replace with GET /api/overview  → { store, month, alerts }
     getOverview: async function () {
@@ -31,17 +69,26 @@
     // TODO: replace with POST /api/records  → { id }
     saveRecord: async function (rec) {
       await delay(600);
-      var id = 'C20260714-' + String(100 + DB.records.length + 1);
+      /* 单号取现有最大序号 +1，补零与历史格式一致（C20260714-0083） */
+      var maxSeq = 0;
+      DB.records.forEach(function (r) {
+        var m = /-(\d+)$/.exec(r.id);
+        if (m) maxSeq = Math.max(maxSeq, Number(m[1]));
+      });
+      var id = 'C20260714-' + ('0000' + (maxSeq + 1)).slice(-4);
       DB.records.unshift(Object.assign({ id: id }, rec));
+      syncMonth(rec, 1);
       return ok({ id: id });
     },
 
     // TODO: replace with DELETE /api/records/:id → { ok: true }
     deleteRecord: async function (id) {
       await delay(350);
+      var removed = null;
       for (var i = 0; i < DB.records.length; i++) {
-        if (DB.records[i].id === id) { DB.records.splice(i, 1); break; }
+        if (DB.records[i].id === id) { removed = DB.records[i]; DB.records.splice(i, 1); break; }
       }
+      if (removed) syncMonth(removed, -1);
       return ok({ ok: true });
     },
 
@@ -74,10 +121,7 @@
       for (var i = 0; i < DB.products.length; i++) { if (DB.products[i].id === id) { p = DB.products[i]; break; } }
       if (p) {
         p.items.push(item);
-        p.bomTotal = Math.round((p.bomTotal + item.amount) * 100) / 100;
-        p.cost = Math.round((p.bomTotal + p.labor + p.overhead) * 100) / 100;
-        p.ratio = Math.round((1 - p.cost / p.price) * 1000) / 10;
-        if (p.ratio < 60) p.status = '超支'; else p.status = '达标';
+        recalcProduct(p);
       }
       return ok({ product: p });
     },

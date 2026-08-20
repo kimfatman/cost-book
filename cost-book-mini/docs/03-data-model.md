@@ -57,8 +57,8 @@
 | id / name / cat | 标识 / 菜名 / 分类（热菜·凉菜·主食·饮品） |
 | price | 售价 |
 | cost | 单位成本（= bomTotal + labor + overhead） |
-| ratio | 成本率 %（`1 - cost/price`），>60 视为偏高，≥66 警示 |
-| status | `达标` / `超支` |
+| ratio | 成本率 %（`cost/price × 100`），>45 视为偏高，≥50 警示 |
+| status | `达标` / `超支`（成本率 > 45 为超支） |
 | bomTotal | 用料配方合计 |
 | labor | 人工成本分摊 |
 | overhead | 水电房租分摊 |

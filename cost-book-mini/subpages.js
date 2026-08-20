@@ -466,7 +466,7 @@
     var h = '';
     list.forEach(function (p) {
       var over = p.status === '超支';
-      var ratioColor = p.ratio <= 60 ? 'var(--c-brand)' : (p.ratio >= 66 ? 'var(--c-danger)' : 'var(--c-amber)');
+      var ratioColor = p.ratio <= 45 ? 'var(--c-brand)' : (p.ratio >= 50 ? 'var(--c-danger)' : 'var(--c-amber)');
       h += '<div class="c-card" style="padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;" data-id="' + p.id + '">' +
         '<div style="width:40px;height:40px;flex:none;border-radius:12px;background:var(--c-brand-soft);color:var(--c-brand);display:flex;align-items:center;justify-content:center;">' + icTag(productIcon, 20) + '</div>' +
         '<div style="flex:1;min-width:0;">' +
@@ -565,24 +565,25 @@
     var bomAction = noun === '菜品' ? '编辑配方' : '编辑成本构成';
     var h = '';
 
-    /* 超支警示条 */
+    /* 超支警示条（成本率 > 45% 判定为超支） */
     if (p.status === '超支') {
+      var overPp = Math.round((p.ratio - 45) * 10) / 10;
       h += '<div class="c-card c-card--flat" style="background:var(--c-danger-soft);display:flex;align-items:center;gap:9px;padding:12px 14px;margin-bottom:12px;">' +
         '<span style="color:var(--c-danger);display:inline-flex;flex:none;">' + icTag('alert-triangle', 16) + '</span>' +
-        '<span style="font-size:12.5px;color:var(--c-danger);font-weight:500;line-height:1.5;">该' + noun + '成本率超出目标 5%，建议调整配方或售价。</span></div>';
+        '<span style="font-size:12.5px;color:var(--c-danger);font-weight:500;line-height:1.5;">该' + noun + '成本率 ' + fmtPct(p.ratio) + '%，超出健康线（45%）' + overPp.toFixed(1) + ' 个百分点，建议调整配方或售价。</span></div>';
     }
 
-    /* 顶部毛利环 */
+    /* 顶部成本率环（成本率越低越健康） */
     var ratio = Math.max(0, Math.min(100, Number(p.ratio) || 0));
-    var ringColor = ratio < 30 ? 'var(--c-danger)' : (ratio < 40 ? 'var(--c-amber)' : 'var(--c-brand)');
-    var ringDash = (ratio * 2.512).toFixed(1); // 毛利率% * 251.2
+    var ringColor = ratio > 50 ? 'var(--c-danger)' : (ratio > 45 ? 'var(--c-amber)' : 'var(--c-brand)');
+    var ringDash = (ratio * 2.512).toFixed(1); // 成本率% * 251.2
     h += '<div class="c-card">' +
       '<div style="display:flex;justify-content:center;">' +
       '<div class="donut">' +
       '<svg class="ring" width="108" height="108" viewBox="0 0 96 96">' +
       '<circle class="bg" cx="48" cy="48" r="40"></circle>' +
       '<circle class="fg" cx="48" cy="48" r="40" stroke="' + ringColor + '" style="stroke-dasharray:0 251.2;stroke-dashoffset:251.2;transition:stroke-dashoffset 1s var(--ease),stroke-dasharray 1s var(--ease);"></circle></svg>' +
-      '<div class="center"><span class="v t-num" style="font-weight:800;">' + fmtPct(ratio) + '%</span><span class="t">毛利率</span></div></div></div>';
+      '<div class="center"><span class="v t-num" style="font-weight:800;">' + fmtPct(ratio) + '%</span><span class="t">成本率</span></div></div></div>';
     h += '<div style="display:flex;justify-content:space-between;margin-top:16px;padding:0 6px;">' +
       '<div style="text-align:center;flex:1;"><div style="font-size:11px;color:var(--c-ink-3);">售价</div>' +
       '<div class="t-num" style="font-size:15px;font-weight:800;margin-top:4px;">¥' + fmtMoney0(p.price) + '</div></div>' +
@@ -590,8 +591,8 @@
       '<div style="text-align:center;flex:1;"><div style="font-size:11px;color:var(--c-ink-3);">单位成本</div>' +
       '<div class="t-num" style="font-size:15px;font-weight:800;margin-top:4px;">¥' + fmtMoney(p.cost) + '</div></div>' +
       '<div style="width:1px;background:var(--c-line);margin:4px 0;"></div>' +
-      '<div style="text-align:center;flex:1;"><div style="font-size:11px;color:var(--c-ink-3);">目标成本率</div>' +
-      '<div style="margin-top:4px;"><span class="c-tag c-tag--outline">65%</span></div></div></div></div>';
+      '<div style="text-align:center;flex:1;"><div style="font-size:11px;color:var(--c-ink-3);">健康成本率线</div>' +
+      '<div style="margin-top:4px;"><span class="c-tag c-tag--outline">45%</span></div></div></div></div>';
 
     /* 成本构成三栏（以显示数据为准） */
     h += '<div class="c-card" style="padding:15px 6px;">' +
@@ -677,8 +678,9 @@
         p.items.forEach(function (x) { total += Number(x.amount) || 0; });
         p.bomTotal = round2(total);
         p.cost = round2(p.bomTotal + p.labor + p.overhead);
-        p.ratio = Math.round((1 - p.cost / p.price) * 1000) / 10;
-        p.status = p.ratio < 60 ? '超支' : '达标';
+        /* 成本率口径：cost / price × 100；成本率 > 45 判定为超支 */
+        p.ratio = Math.round((p.cost / p.price) * 1000) / 10;
+        p.status = p.ratio > 45 ? '超支' : '达标';
         App.toast('已删除');
         renderProductDetail(p);
       }

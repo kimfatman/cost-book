@@ -528,8 +528,8 @@
       desc: '「' + rec.merchant + ' · ¥' + money(rec.amount) + '」删除后不可恢复。',
       danger: true,
       onOk: function () {
+        /* 删除后由 api.deleteRecord 内部 syncMonth 统一联动本月指标 */
         api.deleteRecord(rec.id).then(function () {
-          DB.month.recordCount = Math.max(DB.month.recordCount - 1, 0);
           toast('已删除');
           reloadRecord();
         });
