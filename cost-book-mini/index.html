@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>算得清 · 商家成本管家</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- 桌面演示说明 -->
+<div class="desk-hint"><b>算得清 · 成本管家</b><br>移动端演示原型<br>请用手机宽度浏览体验</div>
+
+<div class="stage">
+  <div class="phone">
+
+    <!-- 状态栏 -->
+    <div class="statusbar">
+      <span class="t-num">9:41</span>
+      <span class="sb-icons">
+        <i class="ic" data-ic="signal"></i>
+        <i class="ic" data-ic="wifi"></i>
+        <i class="ic batt"></i>
+      </span>
+    </div>
+
+    <!-- 导航栏（子页/自定义标题由路由更新） -->
+    <nav class="navbar">
+      <button class="nav-back" id="navBack" aria-label="返回" hidden><i class="ic" data-ic="arrow-left"></i></button>
+      <div class="nav-title" id="navTitle">工作台</div>
+      <div class="nav-side" id="navSide"></div>
+    </nav>
+
+    <!-- 屏幕槽 -->
+    <div class="screens" id="screens">
+      <!-- ====== 登录注册 ====== -->
+      <section class="screen" data-screen="login" data-title="登录"></section>
+
+      <!-- ====== 行业引导向导 ====== -->
+      <section class="screen" data-screen="onboarding" data-title="行业引导"></section>
+
+      <!-- ====== Tab 屏：工作台 ====== -->
+      <section class="screen is-tab is-active" data-screen="home" data-title="工作台">
+        <div id="homeKpi"></div>
+        <div id="homeTrend"></div>
+        <div id="homeAlerts"></div>
+      </section>
+
+      <!-- ====== Tab 屏：记账 ====== -->
+      <section class="screen is-tab" data-screen="record" data-title="记账">
+        <div id="recordList"></div>
+      </section>
+
+      <!-- ====== Tab 屏：分析 ====== -->
+      <section class="screen is-tab" data-screen="analysis" data-title="成本分析">
+        <div id="analysisShare"></div>
+        <div id="analysisTrend"></div>
+        <div id="analysisTop"></div>
+        <div id="analysisSupplier"></div>
+        <div id="anaHidden"></div>
+      </section>
+
+      <!-- ====== Tab 屏：我的 ====== -->
+      <section class="screen is-tab" data-screen="mine" data-title="我的">
+        <div id="mineBody"></div>
+      </section>
+
+      <!-- ====== 子页：记一笔 ====== -->
+      <section class="screen" data-screen="form" data-title="记一笔"></section>
+
+      <!-- ====== 子页：菜品成本 ====== -->
+      <section class="screen" data-screen="product" data-title="菜品成本"></section>
+
+      <!-- ====== 子页：菜品成本详情 ====== -->
+      <section class="screen" data-screen="product-detail" data-title="菜品详情"></section>
+
+      <!-- ====== 子页：成本报表 ====== -->
+      <section class="screen" data-screen="reports" data-title="成本报表"></section>
+
+      <!-- ====== 子页：报表详情 ====== -->
+      <section class="screen" data-screen="report-detail" data-title="月度报表"></section>
+
+      <!-- ====== 子页：供应商管理 ====== -->
+      <section class="screen" data-screen="suppliers" data-title="供应商"></section>
+
+      <!-- ====== 子页：分类管理 ====== -->
+      <section class="screen" data-screen="categories" data-title="分类管理"></section>
+    </div>
+
+    <!-- 底部 TabBar（冻结，顺序不可改） -->
+    <nav class="tabbar" id="tabbar">
+      <a href="#" data-tab="home" data-ic="layout-dashboard"><i class="ic" data-ic="layout-dashboard"></i><span>工作台</span></a>
+      <a href="#" data-tab="record" data-ic="wallet"><i class="ic" data-ic="wallet"></i><span>记账</span></a>
+      <a href="#" data-tab="analysis" data-ic="pie-chart"><i class="ic" data-ic="pie-chart"></i><span>分析</span></a>
+      <a href="#" data-tab="mine" data-ic="user"><i class="ic" data-ic="user"></i><span>我的</span></a>
+    </nav>
+
+    <!-- 记账页悬浮记账按钮（仅 record 屏显示） -->
+    <button class="c-fab is-hidden" id="fabAdd" data-navto="form" aria-label="记一笔"><i class="ic" data-ic="plus"></i></button>
+
+    <!-- 全局交互层 -->
+    <div class="c-toast" id="toast"></div>
+    <div class="c-mask" id="mask"></div>
+    <div class="c-sheet" id="sheet"></div>
+    <div class="c-dialog" id="dialog">
+      <div class="c-dialog__title">确认操作</div>
+      <div class="c-dialog__desc"></div>
+      <div class="c-dialog__btns">
+        <button class="c-btn c-btn--ghost js-dialog-cancel">取消</button>
+        <button class="c-btn c-btn--primary js-dialog-ok">确定</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 离线图标库：注入 data-ic -->
+<script src="icons.js"></script>
+<!-- 单一数据源 -->
+<script src="mock.js"></script>
+<!-- API 桩层（未来真实接口替换点） -->
+<script src="api.js"></script>
+<!-- 应用核心：路由 / 通用交互 / Tab 屏渲染 -->
+<script src="app.js"></script>
+<!-- 子页逻辑：记一笔 / 菜品成本 / 报表 / 供应商 / 分类 -->
+<script src="subpages.js"></script>
+<!-- 登录注册 + 行业引导向导 -->
+<script src="onboarding.js"></script>
+<!-- 隐性成本算法引擎 -->
+<script src="hidden-cost.js"></script>
+<!-- 挂载启动 -->
+<script>
+  (function () {
+    injectIcons();
+    App.init();
+  })();
+</script>
+</body>
+</html>
