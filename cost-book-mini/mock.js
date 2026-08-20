@@ -264,13 +264,13 @@ window.DB = {
       id: 'fresh', name: '生鲜果蔬', desc: '菜场 / 水果店 / 水产', icon: 'shopping-basket',
       noun: '商品', productIcon: 'shopping-cart', alertHint: '损耗报损与冷链成本异常时推送',
       categories: [
-        { id: 't1', name: '进货采购', color: '#0D7261' },
-        { id: 't2', name: '损耗报损', color: '#C24A38' },
-        { id: 't3', name: '摊位租金', color: '#B97A12' },
-        { id: 't4', name: '水电杂费', color: '#3E6FA8' },
-        { id: 't5', name: '人力工资', color: '#8A5FA8' },
-        { id: 't6', name: '物流运费', color: '#5B7C6B' },
-        { id: 't7', name: '其他', color: '#9B978D' }
+        { id: 't1', name: '进货采购', color: '#1677FF' },
+        { id: 't2', name: '损耗报损', color: '#F04438' },
+        { id: 't3', name: '摊位租金', color: '#F79009' },
+        { id: 't4', name: '水电杂费', color: '#12B76A' },
+        { id: 't5', name: '人力工资', color: '#7F56D9' },
+        { id: 't6', name: '物流运费', color: '#0B1836' },
+        { id: 't7', name: '其他', color: '#A3AEC2' }
       ],
       hiddenCost: {
         loss: { low: 2, high: 5, mid: 3.5 }, // 综合损耗率 %（叶菜/水产 ≤5%）
@@ -300,13 +300,13 @@ window.DB = {
       id: 'factory', name: '小型制造', desc: '加工 / 作坊 / 工厂', icon: 'factory',
       noun: '商品', productIcon: 'shopping-cart', alertHint: '废品返工与设备停机异常时推送',
       categories: [
-        { id: 't1', name: '原材料', color: '#0D7261' },
-        { id: 't2', name: '人力工资', color: '#3E6FA8' },
-        { id: 't3', name: '厂房水电', color: '#B97A12' },
-        { id: 't4', name: '设备维护', color: '#5B7C6B' },
-        { id: 't5', name: '物流运输', color: '#C24A38' },
-        { id: 't6', name: '营销推广', color: '#8A5FA8' },
-        { id: 't7', name: '其他', color: '#9B978D' }
+        { id: 't1', name: '原材料', color: '#1677FF' },
+        { id: 't2', name: '人力工资', color: '#12B76A' },
+        { id: 't3', name: '厂房水电', color: '#F79009' },
+        { id: 't4', name: '设备维护', color: '#0B1836' },
+        { id: 't5', name: '物流运输', color: '#F04438' },
+        { id: 't6', name: '营销推广', color: '#7F56D9' },
+        { id: 't7', name: '其他', color: '#A3AEC2' }
       ],
       hiddenCost: {
         scrap: { low: 2, high: 5, mid: 3 },   // 废品率 %
@@ -318,12 +318,12 @@ window.DB = {
       id: 'service', name: '其他服务', desc: '培训 / 维修 / 家政', icon: 'sparkles',
       noun: '服务项目', productIcon: 'shopping-cart', alertHint: '工时闲置与爽约损失异常时推送',
       categories: [
-        { id: 't1', name: '人力工资', color: '#3E6FA8' },
-        { id: 't2', name: '房租水电', color: '#B97A12' },
-        { id: 't3', name: '营销推广', color: '#8A5FA8' },
-        { id: 't4', name: '办公耗材', color: '#0D7261' },
-        { id: 't5', name: '差旅费用', color: '#5B7C6B' },
-        { id: 't6', name: '其他', color: '#9B978D' }
+        { id: 't1', name: '人力工资', color: '#12B76A' },
+        { id: 't2', name: '房租水电', color: '#F79009' },
+        { id: 't3', name: '营销推广', color: '#7F56D9' },
+        { id: 't4', name: '办公耗材', color: '#1677FF' },
+        { id: 't5', name: '差旅费用', color: '#0B1836' },
+        { id: 't6', name: '其他', color: '#A3AEC2' }
       ],
       hiddenCost: {
         idle: { low: 20, high: 45, mid: 30 }, // 工时闲置率 %

@@ -30,12 +30,29 @@
     try { localStorage.removeItem(OB_KEY); } catch (e) { /* ignore */ }
   }
 
-  /* 应用行业配置到 DB（登录态与分类/店铺信息） */
+  /* 应用行业配置到 DB（登录态与分类/店铺信息）
+     Phase3：切换行业时保留旧分类记录 —— 旧分类中仍被 records 引用的，追加为自定义分类，
+     避免历史记录失去分类归属（灰色 fallback）。新分类只替换"无记录引用"的模板分类。 */
   function apply(ob) {
     if (!ob || !ob.industry) return;
     var tpl = DB.industryTemplates[ob.industry];
+    var prevCats = (DB.categories || []).slice();
     if (tpl && tpl.categories) {
-      DB.categories = tpl.categories.map(function (c) { return { id: c.id, name: c.name, color: c.color }; });
+      var newCats = tpl.categories.map(function (c) { return { id: c.id, name: c.name, color: c.color }; });
+      /* 旧分类中仍被记录引用、且新分类不存在同名者 → 保留为自定义分类 */
+      var usedNames = {};
+      DB.records.forEach(function (r) {
+        if (r.type === '支出' && r.cat) usedNames[r.cat] = true;
+      });
+      var newNames = {};
+      newCats.forEach(function (c) { newNames[c.name] = true; });
+      var customSeq = 100;
+      prevCats.forEach(function (c) {
+        if (usedNames[c.name] && !newNames[c.name]) {
+          newCats.push({ id: 'custom' + (customSeq++), name: c.name, color: c.color });
+        }
+      });
+      DB.categories = newCats;
     }
     if (ob.storeName) DB.store.name = ob.storeName;
     DB.store.industry = ob.industry;
@@ -234,7 +251,8 @@
 
   function buildStep1() {
     var h = '<div class="ob-grid">';
-    var keys = ['canteen', 'retail', 'ecommerce', 'beauty', 'stall'];
+    /* Phase3：开放全部 8 个行业（原仅 5 个；fresh/factory/service 此前为隐藏模板） */
+    var keys = ['canteen', 'retail', 'ecommerce', 'beauty', 'fresh', 'factory', 'stall', 'service'];
     keys.forEach(function (k) {
       var t = DB.industryTemplates[k];
       if (!t) return;
