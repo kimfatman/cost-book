@@ -82,9 +82,9 @@
       '<input class="c-input c-input-phone" id="lgCode" inputmode="numeric" maxlength="6" placeholder="6 位验证码" style="flex:1;">' +
       '<button class="c-btn c-btn--soft c-btn--md" id="lgSend" style="flex:none;width:112px;">获取验证码</button></div></div>';
 
-    /* 协议 */
+    /* 协议（初始未勾选：透明底 + 边框线 + 对勾透明，与 bindLogin 切换逻辑一致） */
     h += '<div style="display:flex;align-items:center;gap:8px;padding:2px 2px 18px;font-size:12px;color:var(--c-ink-2);">' +
-      '<button id="lgAgree" class="c-btn" style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--c-brand);background:var(--c-brand);display:inline-flex;align-items:center;justify-content:center;padding:0;">' + icTag('check', 13) + '</button>' +
+      '<button id="lgAgree" class="c-btn" style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--c-line);background:transparent;display:inline-flex;align-items:center;justify-content:center;padding:0;color:transparent;">' + icTag('check', 13) + '</button>' +
       '<span>我已阅读并同意<span style="color:var(--c-brand);">《用户协议》</span>与<span style="color:var(--c-brand);">《隐私政策》</span></span></div>';
 
     /* 登录 */

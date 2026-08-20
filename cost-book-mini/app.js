@@ -504,7 +504,8 @@
   function friendlyDate(d) {
     var today = '2026-07-14';
     if (d === today) return '今天 · ' + d.slice(5).replace('-', '月') + '日';
-    return d.slice(5).replace('-', '月') + '日 · 周' + '一二三四五六日'[new Date(d).getDay()];
+    /* getDay(): 0=周日 → 索引 '日一二三四五六'[0]='日' */
+    return d.slice(5).replace('-', '月') + '日 · 周' + '日一二三四五六'[new Date(d).getDay()];
   }
 
   function viewRecord(rec) {
@@ -581,7 +582,7 @@
     api.getAnalysis(analysisState.period).then(function (res) {
       var d = res.data;
       renderShare(d.period, d.share);
-      renderAnaTrend(d.trend);
+      renderAnaTrend(d.trend, d.period);
       renderAnaTop(d.top);
       renderAnaSup(d.suppliers);
       renderHiddenCost();
@@ -651,7 +652,10 @@
         '<span class="pct">' + pct(s.pct) + '%</span></div>';
     });
     h += '<div class="row"><span class="dot" style="background:var(--c-ink-3);"></span><span class="name">其他 2 项</span><span class="amt t-num">¥' + money0(share[5].amount + share[6].amount) + '</span><span class="pct">' + pct(share[5].pct + share[6].pct) + '%</span></div>';
-    h += '</div></div></div>';
+    h += '</div></div>';
+    /* U4：分段切换时明确构成模块口径，避免其余模块被误读为所选期 */
+    h += '<div style="font-size:10.5px;color:var(--c-ink-3);margin-top:10px;padding-top:8px;border-top:1px solid var(--c-line);">以上为' + per.label + '成本构成；趋势 / TOP5 / 供应商 / 隐性成本为当前月数据</div>';
+    h += '</div>';
     fill('anaShareBox', h);
     setTimeout(function () {
       $all('#anaShareBox .ring circle[stroke-dasharray]').forEach(function (c, i) {
@@ -661,8 +665,10 @@
     }, 80);
   }
 
-  function renderAnaTrend(trend) {
-    var h = '<div class="sec-title"><span>近 6 月趋势</span><span style="font-size:11px;color:var(--c-ink-3);font-weight:400;">成本率 60.0%</span></div>';
+  function renderAnaTrend(trend, per) {
+    /* U4：标题成本率跟随所选期（本月 60.0 / 上月 58.96） */
+    var ratioTxt = (per && per.ratio != null) ? pct(per.ratio) : '—';
+    var h = '<div class="sec-title"><span>近 6 月趋势</span><span style="font-size:11px;color:var(--c-ink-3);font-weight:400;">成本率 ' + ratioTxt + '%</span></div>';
     h += '<div class="c-card">';
     h += '<div class="c-bars" style="height:110px;">';
     var max = 0;

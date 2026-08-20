@@ -12,10 +12,10 @@ window.DB = {
   month: {
     cost: 128640, revenue: 214300, profit: 85660, ratio: 60.0,
     budgetUsed: 80.4,
-    lastCost: 116980, costDelta: 9.9,
-    lastRatio: 58.2, ratioDelta: 1.8,
-    prevRevenue: 201800, revenueDelta: 6.2,
-    prevProfit: 81260, profitDelta: 5.4,
+    lastCost: 116980, costDelta: 10.0,
+    lastRatio: 58.96, ratioDelta: 1.0,
+    prevRevenue: 198400, revenueDelta: 8.0,
+    prevProfit: 81420, profitDelta: 5.2,
     recordCount: 18
   },
   // 成本分类（含色点，用于列表与图表）
@@ -142,8 +142,8 @@ window.DB = {
     { cat: '其他', amount: 1800, pct: 1.5 }
   ],
   periods: {
-    cur: { label: '本月', cost: 128640, revenue: 214300, ratio: 60.0, ratioDelta: 1.8 },
-    last: { label: '上月', cost: 116980, revenue: 198400, ratio: 58.2, ratioDelta: -1.8 }
+    cur: { label: '本月', cost: 128640, revenue: 214300, ratio: 60.0, ratioDelta: 1.0 },
+    last: { label: '上月', cost: 116980, revenue: 198400, ratio: 58.96, ratioDelta: 1.5 }
   },
   // TOP5 高成本菜品（ratio 为成本率，与 products 口径一致）
   topProducts: [
@@ -164,7 +164,7 @@ window.DB = {
   ],
   // 月度报表（3 期）
   reports: [
-    { id: 'R202606', month: '2026-06', label: '2026 年 6 月', totalCost: 116980, revenue: 198400, margin: 81420, ratio: 58.2, status: '已生成',
+    { id: 'R202606', month: '2026-06', label: '2026 年 6 月', totalCost: 116980, revenue: 198400, margin: 81420, ratio: 58.96, status: '已生成',
       items: [
         { cat: '食材采购', amount: 56240, pct: 48.1, delta: -0.6 },
         { cat: '人力工资', amount: 27600, pct: 23.6, delta: 0.4 },
@@ -174,7 +174,7 @@ window.DB = {
         { cat: '设备折旧', amount: 2890, pct: 2.5, delta: 0 },
         { cat: '其他', amount: 1800, pct: 1.5, delta: -0.4 }
       ] },
-    { id: 'R202605', month: '2026-05', label: '2026 年 5 月', totalCost: 114200, revenue: 198800, margin: 84600, ratio: 57.4, status: '已生成',
+    { id: 'R202605', month: '2026-05', label: '2026 年 5 月', totalCost: 114200, revenue: 198800, margin: 84600, ratio: 57.44, status: '已生成',
       items: [
         { cat: '食材采购', amount: 53900, pct: 47.2, delta: 0.8 },
         { cat: '人力工资', amount: 26500, pct: 23.2, delta: 0.2 },
