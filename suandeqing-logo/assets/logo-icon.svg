@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>算得清 Icon</title>
+  <desc>算得清 — 店铺遮阳棚（三道条纹）与微笑脸组合标识。蓝色圆角方形，白色图形元素。</desc>
+  <rect width="1024" height="1024" fill="#FFFFFF"/>
+  <!-- DIGITAL BLUE rounded square -->
+  <rect x="262" y="128" width="500" height="500" rx="112" fill="#087FF5"/>
+  <!-- ===== Storefront + Smile ===== -->
+  <!-- Awning: white band with scalloped bottom (3 humps = 3 stripes) -->
+  <path d="M 338 202 L 686 202 L 686 252 Q 640 282 594 252 Q 548 282 502 252 Q 456 282 410 252 Q 364 282 338 252 Z" fill="#FFFFFF"/>
+  <!-- Two blue gaps creating 3 stripe sections -->
+  <rect x="446" y="202" width="7" height="80" fill="#087FF5"/>
+  <rect x="571" y="202" width="7" height="80" fill="#087FF5"/>
+  <!-- Building body (slightly narrower, overlaps awning) -->
+  <rect x="358" y="256" width="308" height="268" rx="24" fill="#FFFFFF"/>
+  <!-- Smile face: blue negative space -->
+  <circle cx="456" cy="368" r="18" fill="#087FF5"/>
+  <circle cx="568" cy="368" r="18" fill="#087FF5"/>
+  <path d="M 442 412 Q 512 476 582 412" fill="none" stroke="#087FF5" stroke-width="22" stroke-linecap="round"/>
+</svg>

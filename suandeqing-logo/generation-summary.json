@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "skillName": "solo-graphic-generation",
+  "skillVersion": "2026.08.06.21.24.57",
+  "generatedAt": "2026-08-17",
+  "reference": "用户上传 VI 规范图（LOGO SYSTEM DRAFT）",
+  "requestedSize": "1:1 方图（用户确认）；横版组合附加",
+  "actualSize": "square: 1024x1024 viewBox; horizontal: 1600x800 viewBox",
+  "assetCount": 3,
+  "assets": [
+    { "filename": "assets/logo-main.svg", "title": "Logo v1 墨绿账本风", "status": "kept-v1", "canvasNodeId": "image-001" },
+    { "filename": "assets/logo-blue-square.svg", "title": "Logo v2 方形版（DIGITAL BLUE）", "status": "generated", "canvasNodeId": "image-002" },
+    { "filename": "assets/logo-blue-horizontal.svg", "title": "Logo v2 横版组合", "status": "generated", "canvasNodeId": "image-003" }
+  ],
+  "notes": "按参考 VI 规范重绘：DIGITAL BLUE #087FF5 圆角方形图标 + 白色算字、NAVY #0B1856 字标、标语「成本清楚，经营更轻松」；矢量 SVG 保证中文笔画正确"
+}

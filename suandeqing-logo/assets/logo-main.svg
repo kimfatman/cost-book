@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- 背景：暖纸白账页 -->
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBF8F1"/>
+      <stop offset="1" stop-color="#F3EEE2"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0F8A74"/>
+      <stop offset="1" stop-color="#0D7261"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1024" height="1024" rx="190" fill="url(#paper)"/>
+  <!-- 账页内框线 -->
+  <rect x="58" y="58" width="908" height="908" rx="140" fill="none" stroke="#E7E0CF" stroke-width="4"/>
+  <!-- 顶部/底部淡淡账本线 -->
+  <g stroke="#E9E2D2" stroke-width="4" stroke-linecap="round" opacity="0.8">
+    <line x1="150" y1="96" x2="874" y2="96"/>
+    <line x1="150" y1="928" x2="874" y2="928"/>
+  </g>
+
+  <!-- 店铺剪影：拱形遮阳棚 -->
+  <path d="M 268 332 L 268 258 Q 268 152 512 152 Q 756 152 756 258 L 756 332 Z" fill="url(#roof)"/>
+  <!-- 檐口波浪边 -->
+  <path d="M 268 332 L 756 332" stroke="#0A5D4E" stroke-width="10" stroke-linecap="round"/>
+  <!-- 招牌横条 -->
+  <rect x="268" y="332" width="488" height="52" rx="16" fill="#0A5D4E"/>
+  <!-- 算珠点缀 -->
+  <g fill="#D9A441">
+    <circle cx="420" cy="358" r="9"/>
+    <circle cx="462" cy="358" r="9"/>
+    <circle cx="504" cy="358" r="9"/>
+    <circle cx="546" cy="358" r="9"/>
+    <circle cx="588" cy="358" r="9"/>
+  </g>
+  <!-- 门面 -->
+  <rect x="372" y="392" width="280" height="206" rx="34" fill="#0D7261"/>
+  <!-- 门（纸白内凹） -->
+  <rect x="414" y="420" width="196" height="164" rx="26" fill="#FBF8F1"/>
+  <!-- 门把手 -->
+  <circle cx="566" cy="512" r="10" fill="#B97A12"/>
+  <!-- 铜钱点缀（两侧） -->
+  <g stroke="#B97A12" stroke-width="12" fill="none">
+    <circle cx="318" cy="500" r="30"/>
+    <circle cx="706" cy="500" r="30"/>
+  </g>
+  <g fill="#B97A12">
+    <rect x="306" y="488" width="24" height="24" rx="4"/>
+    <rect x="694" y="488" width="24" height="24" rx="4"/>
+  </g>
+
+  <!-- 微笑曲线 -->
+  <path d="M 322 662 Q 512 748 702 662" fill="none" stroke="#0D7261" stroke-width="26" stroke-linecap="round"/>
+
+  <!-- 朱红印章（算） -->
+  <rect x="700" y="460" width="96" height="96" rx="20" fill="#C63B2B"/>
+  <text x="748" y="530" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" font-size="54" font-weight="800" fill="#FBF8F1">算</text>
+
+  <!-- 品牌名 -->
+  <text x="512" y="848" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" font-size="138" font-weight="800" letter-spacing="10" fill="#0D7261">算得清</text>
+  <!-- 副标 -->
+  <text x="512" y="924" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" font-size="44" font-weight="500" letter-spacing="16" fill="#9A9484">商家成本管家</text>
+</svg>

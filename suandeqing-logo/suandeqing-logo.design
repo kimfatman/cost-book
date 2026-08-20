@@ -1,0 +1,63 @@
+{
+  "data": [
+    {
+      "id": "image-001",
+      "title": "标准横版组合（DIGITAL BLUE 图标 + NAVY 字标 + 标语）",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1786962000000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "naturalSize": {
+          "width": 1600,
+          "height": 800
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/logo-horizontal.svg"
+      }
+    },
+    {
+      "id": "image-004",
+      "title": "单色 — 白色（深蓝底，深色场景）",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1786962000000,
+      "canvasData": {
+        "x": 480,
+        "y": 0,
+        "naturalSize": {
+          "width": 1600,
+          "height": 800
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/logo-mono-white.svg"
+      }
+    },
+    {
+      "id": "image-005",
+      "title": "单色 — 黑色（白底，印刷场景）",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1786962000000,
+      "canvasData": {
+        "x": 960,
+        "y": 0,
+        "naturalSize": {
+          "width": 1600,
+          "height": 800
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/logo-mono-black.svg"
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "freeSize",
+    "projectName": "算得清 Logo"
+  }
+}

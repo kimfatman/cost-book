@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" width="1600" height="800">
+  <title>算得清 Logo 单色 — 黑色（白底印刷）</title>
+  <desc>算得清 单色应用：黑色标识 + 字标，白底。适用于印刷场景。</desc>
+  <rect width="1600" height="800" fill="#FFFFFF"/>
+  <!-- Icon: BLACK square + white storefront + BLACK face -->
+  <rect x="120" y="160" width="340" height="340" rx="78" fill="#000000"/>
+  <g transform="translate(120,160) scale(0.68) translate(-262,-128)">
+    <path d="M 338 202 L 686 202 L 686 252 Q 640 282 594 252 Q 548 282 502 252 Q 456 282 410 252 Q 364 282 338 252 Z" fill="#FFFFFF"/>
+    <rect x="446" y="202" width="7" height="80" fill="#000000"/>
+    <rect x="571" y="202" width="7" height="80" fill="#000000"/>
+    <rect x="358" y="256" width="308" height="268" rx="24" fill="#FFFFFF"/>
+    <circle cx="456" cy="368" r="18" fill="#000000"/>
+    <circle cx="568" cy="368" r="18" fill="#000000"/>
+    <path d="M 442 412 Q 512 476 582 412" fill="none" stroke="#000000" stroke-width="22" stroke-linecap="round"/>
+  </g>
+  <!-- Wordmark: BLACK -->
+  <text x="560" y="370" dominant-baseline="central" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" font-size="170" font-weight="800" letter-spacing="8" fill="#000000">算得清</text>
+  <text x="566" y="470" dominant-baseline="central" font-family="'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif" font-size="46" font-weight="500" letter-spacing="14" fill="#000000" opacity="0.62">成本清楚 · 经营更轻松</text>
+</svg>
