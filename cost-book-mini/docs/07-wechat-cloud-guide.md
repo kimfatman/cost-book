@@ -241,7 +241,7 @@ exports.getSession = async function () {
 
 新增云函数 + 集合，接入时机 = 首次 login 且 `store.industry` 为空：
 
-- 集合 `industry_templates`：预置 餐饮 / 零售 / 生鲜果蔬 / 美容美发 / 小型制造 的分类模板（名称 + 色值 + 默认预算占比）
+- 集合 `industry_templates`：预置 餐饮 / 零售 / 电商 / 美业服务 / 小商贩 的分类模板（名称 + 色值 + 默认预算占比）；生鲜果蔬、小型制造和其他服务保留为兼容扩展模板
 - 云函数 `onboarding.create`：接收 `{ industry, storeName, budget }` → 创建 `stores` → 从模板批量写入 `categories`
 - 客户端：注册后进入引导向导页（现有原型可新增 `data-screen="onboarding"` 页），完成后进工作台
 

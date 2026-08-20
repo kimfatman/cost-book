@@ -125,7 +125,7 @@
     formState.type = edit ? (edit.type === '收入' ? '收入' : '支出')
                          : (preset === 'income' ? '收入' : '支出');
     formState.date = edit ? edit.date : '2026-07-14';
-    formState.cat = edit ? edit.cat : '食材采购';
+    formState.cat = edit ? edit.cat : ((DB.categories[0] && DB.categories[0].name) || '其他');
     formState.merchant = edit ? (edit.merchant || '') : '';
     formState.note = edit ? (edit.note || '') : '';
     formState.attach = edit ? !!edit.attach : false;
@@ -279,7 +279,7 @@
         segBtns.forEach(function (x) { x.classList.toggle('is-active', x === b); });
         var lbl = App.$('#formAmountLabel');
         if (lbl) lbl.textContent = formState.type === '支出' ? '支出金额' : '收入金额';
-        formState.cat = formState.type === '收入' ? '其他' : '食材采购';
+        formState.cat = formState.type === '收入' ? '其他' : ((DB.categories[0] && DB.categories[0].name) || '其他');
         renderFormCat();
       });
     });
@@ -289,7 +289,7 @@
     if (amtInput) {
       App.on(amtInput, 'focus', function () {
         amtInput.parentNode.style.borderColor = 'var(--c-brand)';
-        amtInput.parentNode.style.boxShadow = '0 0 0 3px rgba(13,114,97,.12)';
+        amtInput.parentNode.style.boxShadow = '0 0 0 3px rgba(22,119,255,.12)';
       });
       App.on(amtInput, 'blur', function () {
         amtInput.parentNode.style.borderColor = '';
@@ -399,6 +399,7 @@
   }
 
   function buildProductShell(d) {
+    var noun = App.industryNoun ? App.industryNoun() : '菜品';
     var cats = [];
     DB.products.forEach(function (p) { if (cats.indexOf(p.cat) < 0) cats.push(p.cat); });
 
@@ -406,18 +407,18 @@
 
     // 顶部统计卡：3 列 KPI（菜品总数 / 平均成本率 / 超支菜品）
     h += '<div class="c-card c-card--hero" style="padding:15px 10px;margin-bottom:12px;display:flex;align-items:center;">' +
-      '<div style="flex:1;text-align:center;"><div style="font-size:11px;opacity:.82;">菜品总数</div>' +
+      '<div style="flex:1;text-align:center;"><div style="font-size:11px;opacity:.82;">' + noun + '总数</div>' +
       '<div class="t-num" style="font-size:21px;font-weight:800;margin-top:3px;">' + DB.products.length + '</div></div>' +
       '<div style="width:1px;height:32px;background:rgba(255,255,255,.22);flex:none;"></div>' +
       '<div style="flex:1;text-align:center;"><div style="font-size:11px;opacity:.82;">平均成本率</div>' +
       '<div class="t-num" style="font-size:21px;font-weight:800;margin-top:3px;">' + fmtPct(d.avgRatio) + '%</div></div>' +
       '<div style="width:1px;height:32px;background:rgba(255,255,255,.22);flex:none;"></div>' +
-      '<div style="flex:1;text-align:center;"><div style="font-size:11px;opacity:.82;">超支菜品</div>' +
+      '<div style="flex:1;text-align:center;"><div style="font-size:11px;opacity:.82;">超支' + noun + '</div>' +
       '<div style="margin-top:4px;"><span class="c-tag c-tag--danger" style="padding:3px 10px;">' + d.overCount + '</span></div></div></div>';
 
     // 搜索 + 分类筛选 chips（cat 值去重）
     h += '<div class="c-search" style="margin-bottom:10px;">' + icTag('search', 16) +
-      '<input id="prodSearch" placeholder="搜索菜品名称" value="' + esc(pState.keyword) + '"></div>';
+      '<input id="prodSearch" placeholder="搜索' + noun + '名称" value="' + esc(pState.keyword) + '"></div>';
     h += '<div class="chips" style="margin-bottom:12px;" id="prodCatChips">' +
       '<button class="c-chip' + (pState.cat === '全部' ? ' is-active' : '') + '" data-c="全部">全部</button>';
     cats.forEach(function (c) {
@@ -452,11 +453,13 @@
   }
 
   function renderProductList(list) {
+    var noun = App.industryNoun ? App.industryNoun() : '菜品';
+    var productIcon = App.industryProductIcon ? App.industryProductIcon() : 'utensils';
     var box = App.$('#prodListBox');
     if (!box) return;
     if (!list.length) {
-      box.innerHTML = '<div class="c-empty">' + icTag('utensils', 44) +
-        '<p>没有符合条件的菜品</p><div class="sub">换个分类或关键词试试</div></div>';
+      box.innerHTML = '<div class="c-empty">' + icTag(productIcon, 44) +
+        '<p>没有符合条件的' + noun + '</p><div class="sub">换个分类或关键词试试</div></div>';
       App.scheduleInject(box);
       return;
     }
@@ -465,7 +468,7 @@
       var over = p.status === '超支';
       var ratioColor = p.ratio <= 60 ? 'var(--c-brand)' : (p.ratio >= 66 ? 'var(--c-danger)' : 'var(--c-amber)');
       h += '<div class="c-card" style="padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;" data-id="' + p.id + '">' +
-        '<div style="width:40px;height:40px;flex:none;border-radius:12px;background:var(--c-brand-soft);color:var(--c-brand);display:flex;align-items:center;justify-content:center;">' + icTag('utensils', 20) + '</div>' +
+        '<div style="width:40px;height:40px;flex:none;border-radius:12px;background:var(--c-brand-soft);color:var(--c-brand);display:flex;align-items:center;justify-content:center;">' + icTag(productIcon, 20) + '</div>' +
         '<div style="flex:1;min-width:0;">' +
         '<div style="font-size:14px;font-weight:600;">' + esc(p.name) + '</div>' +
         '<div style="font-size:11.5px;color:var(--c-ink-3);margin-top:2px;">售价 ¥' + fmtMoney0(p.price) + ' · 成本 ¥' + fmtMoney(p.cost) + '</div></div>' +
@@ -557,13 +560,16 @@
   }
 
   function renderProductDetail(p) {
+    var noun = App.industryNoun ? App.industryNoun() : '菜品';
+    var bomLabel = noun === '菜品' ? '食材 BOM 合计' : noun + '成本构成';
+    var bomAction = noun === '菜品' ? '编辑配方' : '编辑成本构成';
     var h = '';
 
     /* 超支警示条 */
     if (p.status === '超支') {
       h += '<div class="c-card c-card--flat" style="background:var(--c-danger-soft);display:flex;align-items:center;gap:9px;padding:12px 14px;margin-bottom:12px;">' +
         '<span style="color:var(--c-danger);display:inline-flex;flex:none;">' + icTag('alert-triangle', 16) + '</span>' +
-        '<span style="font-size:12.5px;color:var(--c-danger);font-weight:500;line-height:1.5;">该菜品成本率超出目标 5%，建议调整配方或售价。</span></div>';
+        '<span style="font-size:12.5px;color:var(--c-danger);font-weight:500;line-height:1.5;">该' + noun + '成本率超出目标 5%，建议调整配方或售价。</span></div>';
     }
 
     /* 顶部毛利环 */
@@ -590,7 +596,7 @@
     /* 成本构成三栏（以显示数据为准） */
     h += '<div class="c-card" style="padding:15px 6px;">' +
       '<div style="display:flex;">' +
-      '<div style="flex:1;text-align:center;padding:4px 2px;"><div style="font-size:11px;color:var(--c-ink-3);">食材 BOM 合计</div>' +
+      '<div style="flex:1;text-align:center;padding:4px 2px;"><div style="font-size:11px;color:var(--c-ink-3);">' + bomLabel + '</div>' +
       '<div class="t-num" style="font-size:16px;font-weight:800;color:var(--c-brand);margin-top:5px;">¥' + fmtMoney(p.bomTotal) + '</div></div>' +
       '<div style="flex:1;text-align:center;padding:4px 2px;"><div style="font-size:11px;color:var(--c-ink-3);">人工</div>' +
       '<div class="t-num" style="font-size:16px;font-weight:800;color:var(--c-brand);margin-top:5px;">¥' + fmtMoney(p.labor) + '</div></div>' +
@@ -601,8 +607,8 @@
     var bomTotal = 0;
     p.items.forEach(function (it) { bomTotal += Number(it.amount) || 0; });
     h += '<div class="c-card">' +
-      '<div class="sec-title" style="margin-top:0;"><span>用料配方</span>' +
-      '<button class="c-btn c-btn--sm c-btn--soft" id="addBomBtn">' + icTag('plus') + ' 添加用料</button></div>';
+      '<div class="sec-title" style="margin-top:0;"><span>' + (noun === '菜品' ? '用料配方' : '成本构成') + '</span>' +
+      '<button class="c-btn c-btn--sm c-btn--soft" id="addBomBtn">' + icTag('plus') + ' ' + (noun === '菜品' ? '添加用料' : '添加成本项') + '</button></div>';
     p.items.forEach(function (it, i) {
       var parts = [];
       if (it.spec) parts.push(esc(it.spec));
@@ -635,7 +641,7 @@
 
     /* 底部操作条 */
     h += '<div style="display:flex;gap:10px;margin-top:16px;">' +
-      '<button class="c-btn c-btn--soft c-btn--block" id="editBomBtn">' + icTag('pencil') + ' 编辑配方</button>' +
+      '<button class="c-btn c-btn--soft c-btn--block" id="editBomBtn">' + icTag('pencil') + ' ' + bomAction + '</button>' +
       '<button class="c-btn c-btn--ghost c-btn--block" id="alertBtn">' + icTag('bell') + ' 设为超支提醒</button></div>';
 
     fill(pdBody, h);
@@ -645,8 +651,8 @@
       on(b, 'click', function () { deleteBom(Number(b.getAttribute('data-del'))); });
     });
     on($('#addBomBtn'), 'click', openAddModal);
-    on($('#editBomBtn'), 'click', function () { App.toast('编辑配方：跳转供应链页（演示）'); });
-    on($('#alertBtn'), 'click', function () { App.toast('已开启该菜品成本预警'); });
+    on($('#editBomBtn'), 'click', function () { App.toast(bomAction + '：跳转供应链页（演示）'); });
+    on($('#alertBtn'), 'click', function () { App.toast('已开启该' + noun + '成本预警'); });
 
     /* 毛利环填充动画：dashoffset 由 251.2 过渡到 0 */
     setTimeout(function () {
@@ -683,15 +689,17 @@
   function openAddModal() {
     var p = findProduct(App.ctx && App.ctx.productId);
     if (!p) return;
+    var noun = App.industryNoun ? App.industryNoun() : '菜品';
+    var itemLabel = noun === '菜品' ? '用料' : noun + '成本项';
     var wrap = document.createElement('div');
     wrap.style.cssText = 'position:absolute;inset:0;z-index:60;';
     wrap.innerHTML =
       '<div class="c-mask is-show"></div>' +
       '<div class="c-dialog is-show" style="width:320px;text-align:left;">' +
-      '<div class="c-dialog__title" style="text-align:center;font-size:15px;">添加用料</div>' +
+      '<div class="c-dialog__title" style="text-align:center;font-size:15px;">添加' + itemLabel + '</div>' +
       '<div style="margin-top:14px;">' +
-      '<div class="c-field"><div class="c-field__label">名称<span class="req">*</span></div>' +
-      '<input class="c-input" id="bomName" placeholder="如：鲜牛肉"></div>' +
+      '<div class="c-field"><div class="c-field__label">' + itemLabel + '名称<span class="req">*</span></div>' +
+      '<input class="c-input" id="bomName" placeholder="' + (noun === '菜品' ? '如：鲜牛肉' : '如：主推' + noun) + '"></div>' +
       '<div class="c-field"><div class="c-field__label">规格<span class="c-field__tip">选填</span></div>' +
       '<input class="c-input" id="bomSpec" placeholder="如：500g"></div>' +
       '<div class="c-field"><div class="c-field__label">数量<span class="c-field__tip">选填</span></div>' +
@@ -715,7 +723,7 @@
     var spec = (addModalEl.querySelector('#bomSpec').value || '').trim();
     var qty = (addModalEl.querySelector('#bomQty').value || '').trim();
     var price = round2(parseFloat(addModalEl.querySelector('#bomPrice').value));
-    if (!name) { App.toast('请填写用料名称'); return; }
+    if (!name) { App.toast('请填写' + (App.industryNoun && App.industryNoun() === '菜品' ? '用料' : '成本项') + '名称'); return; }
     if (!(price > 0)) { App.toast('请填写正确的单价'); return; }
     // 演示简化：amount = 单价
     var item = { name: name, spec: spec, qty: qty, price: price, amount: price };
@@ -1102,7 +1110,7 @@
      - 编辑模态（名称 + 6 色单选）、删除二次确认
      - 底部新增分类按钮，空列表显示空状态
   ============================================================ */
-  var PRESET_COLORS = ['#0D7261', '#3E6FA8', '#B97A12', '#8A5FA8', '#C24A38', '#5B7C6B'];
+  var PRESET_COLORS = ['#1677FF', '#12B76A', '#F79009', '#7F56D9', '#F04438', '#0B1836', '#A3AEC2'];
 
   function findCat(id) {
     var r = null;

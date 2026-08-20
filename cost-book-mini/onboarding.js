@@ -38,6 +38,7 @@
       DB.categories = tpl.categories.map(function (c) { return { id: c.id, name: c.name, color: c.color }; });
     }
     if (ob.storeName) DB.store.name = ob.storeName;
+    DB.store.industry = ob.industry;
     DB.store.type = (tpl ? tpl.name : '商户') + ' · ' + (ob.scale || '单店');
     if (ob.budget) DB.store.budget = Number(ob.budget);
   }
@@ -63,13 +64,13 @@
 
     /* 品牌 hero */
     h += '<div class="lock-hero">' +
-      '<div class="brand">' + icTag('notebook-pen', 26) + '算得清</div>' +
-      '<div class="slogan">让每一笔成本都算得清 · 面向中小商家的成本管家</div>' +
+      '<div class="brand"><span class="brand-mark">' + icTag('store', 22) + '</span><span>算得清</span></div>' +
+      '<div class="slogan">成本清楚，经营更轻松 · 面向中小商家的成本管家</div>' +
       '<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">' +
       '<span class="c-tag" style="background:rgba(255,255,255,.16);color:#fff;">' + icTag('wallet') + ' 精细记账</span>' +
-      '<span class="c-tag" style="background:rgba(255,255,255,.16);color:#fff;">' + icTag('utensils') + ' 成本核算</span>' +
+      '<span class="c-tag" style="background:rgba(255,255,255,.16);color:#fff;">' + icTag('pie-chart') + ' 成本分析</span>' +
       '<span class="c-tag" style="background:rgba(255,255,255,.16);color:#fff;">' + icTag('file-text') + ' 月度报表</span></div>' +
-      '<div class="price-note">新用户注册即享 14 天专业版 · 支持多行业模板</div></div>';
+      '<div class="price-note">餐饮 · 零售 · 电商 · 美业服务 · 小商贩，一套账本按行业开箱即用</div></div>';
 
     /* 手机号 */
     h += '<div class="c-field"><div class="c-field__label">手机号<span class="req">*</span></div>' +
@@ -185,7 +186,7 @@
 
   var OB_TITLES = { 1: '选择你的行业', 2: '完善门店信息', 3: '分类模板已生成' };
   var OB_SUBS = {
-    1: '我们将按行业生成匹配的成本分类，开箱即用',
+    1: '选择行业模板，系统将自动生成匹配的成本分类',
     2: '用于计算预算与生成报表',
     3: '以下分类已自动配置，可随时在「分类管理」中调整'
   };
@@ -233,7 +234,7 @@
 
   function buildStep1() {
     var h = '<div class="ob-grid">';
-    var keys = ['canteen', 'retail', 'fresh', 'beauty', 'factory', 'stall', 'service'];
+    var keys = ['canteen', 'retail', 'ecommerce', 'beauty', 'stall'];
     keys.forEach(function (k) {
       var t = DB.industryTemplates[k];
       if (!t) return;
@@ -293,7 +294,7 @@
 
     h += '<div class="c-card c-card--flat" style="display:flex;align-items:flex-start;gap:8px;margin-top:20px;">' +
       '<span style="color:var(--c-brand);flex:none;margin-top:1px;">' + icTag('check', 14) + '</span>' +
-      '<div style="font-size:12px;color:var(--c-ink-2);line-height:1.7;">分类仅影响记账时的归集选项，可在「我的 → 分类管理」中增删改，随时切换行业模板。</div></div>';
+      '<div style="font-size:12px;color:var(--c-ink-2);line-height:1.7;">分类会同步影响记账归集和隐性成本模型，可在「我的 → 切换行业」中随时更换模板。</div></div>';
 
     h += '</div>';
     return h;

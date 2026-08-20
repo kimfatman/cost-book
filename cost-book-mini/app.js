@@ -42,6 +42,29 @@
   function pct(n) { return (Number(n) || 0).toFixed(1); }
   function monthShort(m) { return m.slice(5) + '月'; }
 
+  function currentIndustryId() {
+    var ob = window.Onboarding && Onboarding.read ? Onboarding.read() : null;
+    return (ob && ob.industry) || (DB.store && DB.store.industry) || 'canteen';
+  }
+
+  function industryNoun() {
+    return currentIndustryId() === 'canteen' ? '菜品' : (currentIndustryId() === 'beauty' ? '服务项目' : '商品');
+  }
+
+  function industryProductIcon() {
+    return currentIndustryId() === 'canteen' ? 'utensils' : (currentIndustryId() === 'beauty' ? 'scissors' : 'shopping-cart');
+  }
+
+  function industryAlertHint() {
+    var id = currentIndustryId();
+    if (id === 'canteen') return '食材价格波动时推送';
+    if (id === 'retail') return '库存损耗与滞销时推送';
+    if (id === 'ecommerce') return '退款、广告与平台费用异常时推送';
+    if (id === 'beauty') return '预约空档与耗材异常时推送';
+    if (id === 'stall') return '进货损耗与摊位费异常时推送';
+    return '经营成本出现异常时推送';
+  }
+
   function catColor(name) {
     var c = null;
     DB.categories.forEach(function (x) { if (x.name === name) c = x.color; });
@@ -302,7 +325,7 @@
       '<div style="display:flex;justify-content:space-around;">';
     var quicks = [
       { ic: 'notebook-pen', label: '记一笔', to: 'form' },
-      { ic: 'utensils', label: '菜品成本', to: 'product' },
+      { ic: industryProductIcon(), label: industryNoun() + '成本', to: 'product' },
       { ic: 'file-text', label: '报表', to: 'reports' },
       { ic: 'truck', label: '供应商', to: 'suppliers' }
     ];
@@ -654,7 +677,8 @@
   }
 
   function renderAnaTop(top) {
-    var h = '<div class="sec-title"><span>成本 TOP5 菜品</span><button class="link c-btn" data-navto="product">' + ic('chevron-right') + '全部菜品</button></div>';
+    var noun = industryNoun();
+    var h = '<div class="sec-title"><span>成本 TOP5 ' + noun + '</span><button class="link c-btn" data-navto="product">' + ic('chevron-right') + '全部' + noun + '</button></div>';
     h += '<div class="c-card" style="padding:6px 15px;">';
     var maxCost = 25;
     top.forEach(function (t, i) {
@@ -669,7 +693,8 @@
   }
 
   function renderAnaSup(sups) {
-    var h = '<div class="sec-title"><span>本月供应商支出</span><button class="link c-btn" data-navto="suppliers">' + ic('chevron-right') + '管理</button></div>';
+    var title = currentIndustryId() === 'ecommerce' ? '本月供应链支出' : '本月供应商支出';
+    var h = '<div class="sec-title"><span>' + title + '</span><button class="link c-btn" data-navto="suppliers">' + ic('chevron-right') + '管理</button></div>';
     h += '<div class="c-card" style="padding:6px 15px;">';
     sups.slice(0, 4).forEach(function (s) {
       h += '<div class="c-cell" data-navto="suppliers">' +
@@ -688,8 +713,10 @@
   function mountMine() {
     var h = '';
     var ob = window.Onboarding && Onboarding.read ? Onboarding.read() : null;
-    var indId = (ob && ob.industry) || 'canteen';
+    var indId = (ob && ob.industry) || currentIndustryId();
     var indIcon = (DB.industryTemplates[indId] && DB.industryTemplates[indId].icon) || 'store';
+    var productLabel = industryNoun() + '成本卡';
+    var productIcon = industryProductIcon();
     var phone = (ob && ob.phone) || '未绑定';
 
     /* 店铺卡 */
@@ -718,7 +745,7 @@
     }
 
     h += group('经营工具', [
-      { ic: 'utensils', label: '菜品成本卡', color: 'var(--c-brand)', bg: 'var(--c-brand-soft)', to: 'product' },
+      { ic: productIcon, label: productLabel, color: 'var(--c-brand)', bg: 'var(--c-brand-soft)', to: 'product' },
       { ic: 'file-text', label: '成本报表', color: 'var(--c-amber)', bg: 'var(--c-amber-soft)', to: 'reports' },
       { ic: 'truck', label: '供应商管理', color: 'var(--c-brand)', bg: 'var(--c-brand-soft)', to: 'suppliers' },
       { ic: 'shopping-basket', label: '成本分类', color: 'var(--c-amber)', bg: 'var(--c-amber-soft)', to: 'categories' }
@@ -727,7 +754,7 @@
     h += '<div class="c-group"><div class="g-title">偏好</div><div class="c-card" style="padding:4px 15px;">' +
       '<div class="c-cell" data-act="remind">' +
       '<div class="c-cell__icon" style="background:var(--c-amber-soft);color:var(--c-amber);">' + ic('bell') + '</div>' +
-      '<div class="c-cell__body"><div class="c-cell__title">成本异常提醒</div><div class="c-cell__sub">食材价格波动时推送</div></div>' +
+      '<div class="c-cell__body"><div class="c-cell__title">成本异常提醒</div><div class="c-cell__sub">' + industryAlertHint() + '</div></div>' +
       '<div class="c-switch is-on" id="swRemind"></div></div>' +
       '<div class="c-cell" data-act="credit">' +
       '<div class="c-cell__icon" style="background:var(--c-brand-soft);color:var(--c-brand);">' + ic('shield-check') + '</div>' +
@@ -833,6 +860,8 @@
     money0: money0,
     pct: pct,
     catColor: catColor,
+    industryNoun: industryNoun,
+    industryProductIcon: industryProductIcon,
     skeleton: skeleton,
     fill: fill,
     toast: toast,

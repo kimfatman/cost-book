@@ -108,6 +108,46 @@
       return items;
     },
 
+    /* 电商：退款退货 + 平台结算漏损 + 广告无效消耗 + 库存占用 */
+    ecommerce: function (m) {
+      var c = cfg('ecommerce');
+      var rev = m.revenue || 0;
+      var purchase = catTotal(['商品采购', '货品']) || Math.min(m.cost, rev * 0.55);
+
+      var refund = rev * c.refund.mid / 100;
+      var refundHealth = rateHealth(c.refund.mid, c.refund);
+
+      var platformBase = catTotal(['平台佣金']) || rev * 0.06;
+      var platform = platformBase * c.platform.rate;
+      var platformHealth = 76;
+
+      var adSpend = catTotal(['广告投放']) || rev * 0.08;
+      var ad = adSpend * c.ad.rate;
+      var adHealth = 72;
+
+      var inventory = purchase * c.inventory.rate / 12;
+      var inventoryHealth = 78;
+
+      return [
+        item('refund', '退款退货损失', 'refresh-cw', refund,
+          '营收 ¥' + fmtMoney0(rev) + ' × 退款退货率 ' + c.refund.mid + '%',
+          '行业区间 ' + c.refund.low + '-' + c.refund.high + '%', refundHealth,
+          '按商品、渠道和原因拆分退款，优先治理高退款 SKU 与逆向物流'),
+        item('platform', '平台结算漏损', 'wallet', platform,
+          '平台佣金 ¥' + fmtMoney0(platformBase) + ' × 活动/结算漏损 ' + (c.platform.rate * 100) + '%',
+          '优惠、佣金和结算差异约 4-8%', platformHealth,
+          '逐单核对平台账单、优惠承担方和到账金额，避免只看 GMV 不看实收'),
+        item('ad', '广告投放无效消耗', 'megaphone', ad,
+          '广告投放 ¥' + fmtMoney0(adSpend) + ' × 无效消耗 ' + (c.ad.rate * 100) + '%',
+          '冷启动/低转化流量约 8-15%', adHealth,
+          '按渠道跟踪投产比和退款后收入，及时关停低转化计划'),
+        item('inventory', '库存资金占用', 'archive', inventory,
+          '商品采购 ¥' + fmtMoney0(purchase) + ' × 年化占用 ' + (c.inventory.rate * 100) + '% ÷ 12',
+          '仓储、资金和滞销占用约年化 15-24%', inventoryHealth,
+          '按周转天数和库龄清理库存，降低压货与过季折价风险')
+      ];
+    },
+
     /* 零售：门店损耗 + 库存持有 + 滞销过时 */
     retail: function (m) {
       var c = cfg('retail');

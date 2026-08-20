@@ -20,13 +20,13 @@ window.DB = {
   },
   // 成本分类（含色点，用于列表与图表）
   categories: [
-    { id: 'c1', name: '食材采购', color: '#0D7261' },
-    { id: 'c2', name: '人力工资', color: '#3E6FA8' },
-    { id: 'c3', name: '房租水电', color: '#B97A12' },
-    { id: 'c4', name: '营销推广', color: '#8A5FA8' },
-    { id: 'c5', name: '物流仓储', color: '#C24A38' },
-    { id: 'c6', name: '设备折旧', color: '#5B7C6B' },
-    { id: 'c7', name: '其他', color: '#9B978D' }
+    { id: 'c1', name: '食材采购', color: '#1677FF' },
+    { id: 'c2', name: '人力工资', color: '#12B76A' },
+    { id: 'c3', name: '房租水电', color: '#F79009' },
+    { id: 'c4', name: '营销推广', color: '#7F56D9' },
+    { id: 'c5', name: '物流仓储', color: '#F04438' },
+    { id: 'c6', name: '设备折旧', color: '#0B1836' },
+    { id: 'c7', name: '其他', color: '#A3AEC2' }
   ],
   // 成本记录（时间倒序）
   records: [
@@ -206,13 +206,13 @@ window.DB = {
     canteen: {
       id: 'canteen', name: '餐饮', desc: '餐厅 / 小吃 / 饮品店', icon: 'utensils',
       categories: [
-        { id: 't1', name: '食材采购', color: '#0D7261' },
-        { id: 't2', name: '人力工资', color: '#3E6FA8' },
-        { id: 't3', name: '房租水电', color: '#B97A12' },
-        { id: 't4', name: '营销推广', color: '#8A5FA8' },
-        { id: 't5', name: '物流仓储', color: '#C24A38' },
-        { id: 't6', name: '设备折旧', color: '#5B7C6B' },
-        { id: 't7', name: '其他', color: '#9B978D' }
+        { id: 't1', name: '食材采购', color: '#1677FF' },
+        { id: 't2', name: '人力工资', color: '#12B76A' },
+        { id: 't3', name: '房租水电', color: '#F79009' },
+        { id: 't4', name: '营销推广', color: '#7F56D9' },
+        { id: 't5', name: '物流仓储', color: '#F04438' },
+        { id: 't6', name: '设备折旧', color: '#0B1836' },
+        { id: 't7', name: '其他', color: '#A3AEC2' }
       ],
       // 隐性成本基准（docs/08-hidden-cost-engine.md）
       hiddenCost: {
@@ -224,18 +224,37 @@ window.DB = {
     retail: {
       id: 'retail', name: '零售', desc: '超市 / 便利店 / 服装店', icon: 'store',
       categories: [
-        { id: 't1', name: '商品采购', color: '#0D7261' },
-        { id: 't2', name: '人力工资', color: '#3E6FA8' },
-        { id: 't3', name: '房租水电', color: '#B97A12' },
-        { id: 't4', name: '营销推广', color: '#8A5FA8' },
-        { id: 't5', name: '物流配送', color: '#5B7C6B' },
-        { id: 't6', name: '损耗报损', color: '#C24A38' },
-        { id: 't7', name: '其他', color: '#9B978D' }
+        { id: 't1', name: '商品采购', color: '#1677FF' },
+        { id: 't2', name: '人力工资', color: '#12B76A' },
+        { id: 't3', name: '房租水电', color: '#F79009' },
+        { id: 't4', name: '营销推广', color: '#7F56D9' },
+        { id: 't5', name: '物流配送', color: '#0B1836' },
+        { id: 't6', name: '损耗报损', color: '#F04438' },
+        { id: 't7', name: '其他', color: '#A3AEC2' }
       ],
       hiddenCost: {
         shrinkage: { low: 1, high: 3, mid: 1.6 }, // 门店损耗率 %（NRF 均值 1.4-1.6%）
         carrying: { rate: 0.25 },                  // 库存年化持有成本
         obsolete: { rate: 0.25 }                   // 滞销过时率
+      }
+    },
+    ecommerce: {
+      id: 'ecommerce', name: '电商', desc: '网店 / 直播 / 社交电商', icon: 'shopping-cart',
+      categories: [
+        { id: 't1', name: '商品采购', color: '#1677FF' },
+        { id: 't2', name: '平台佣金', color: '#F79009' },
+        { id: 't3', name: '履约物流', color: '#12B76A' },
+        { id: 't4', name: '广告投放', color: '#7F56D9' },
+        { id: 't5', name: '仓储包装', color: '#0B1836' },
+        { id: 't6', name: '退款售后', color: '#F04438' },
+        { id: 't7', name: '人工工资', color: '#667085' },
+        { id: 't8', name: '其他', color: '#A3AEC2' }
+      ],
+      hiddenCost: {
+        refund: { low: 3, high: 8, mid: 5 },     // 退款退货率 %
+        platform: { rate: 0.06 },                // 平台费之外的结算/活动漏损 6%
+        ad: { rate: 0.12 },                       // 广告投放无效消耗 12%
+        inventory: { rate: 0.18 }                // 库存资金占用年化 18%
       }
     },
     fresh: {
@@ -256,15 +275,15 @@ window.DB = {
       }
     },
     beauty: {
-      id: 'beauty', name: '美容美发', desc: '理发 / 美甲 / 护肤', icon: 'scissors',
+      id: 'beauty', name: '美业服务', desc: '美发 / 美甲 / 美容 / 预约服务', icon: 'scissors',
       categories: [
-        { id: 't1', name: '产品耗材', color: '#0D7261' },
-        { id: 't2', name: '人力工资', color: '#3E6FA8' },
-        { id: 't3', name: '房租水电', color: '#B97A12' },
-        { id: 't4', name: '营销推广', color: '#8A5FA8' },
-        { id: 't5', name: '设备折旧', color: '#5B7C6B' },
-        { id: 't6', name: '耗品杂项', color: '#C24A38' },
-        { id: 't7', name: '其他', color: '#9B978D' }
+        { id: 't1', name: '产品耗材', color: '#1677FF' },
+        { id: 't2', name: '人力工资', color: '#12B76A' },
+        { id: 't3', name: '房租水电', color: '#F79009' },
+        { id: 't4', name: '营销推广', color: '#7F56D9' },
+        { id: 't5', name: '设备折旧', color: '#0B1836' },
+        { id: 't6', name: '耗品杂项', color: '#F04438' },
+        { id: 't7', name: '其他', color: '#A3AEC2' }
       ],
       hiddenCost: {
         idle: { low: 21, high: 53, mid: 40 },  // 工位空置率 %（利用率中位 47%）
@@ -307,13 +326,13 @@ window.DB = {
     },
     // 商贸 · 摆摊商贩：为地摊/夜市/集市商贩优化的极简模型
     stall: {
-      id: 'stall', name: '商贸摆摊', desc: '地摊 / 夜市 / 集市商贩', icon: 'shopping-cart',
+      id: 'stall', name: '小商贩', desc: '地摊 / 夜市 / 集市摆摊', icon: 'shopping-cart',
       categories: [
-        { id: 't1', name: '进货成本', color: '#0D7261' },
-        { id: 't2', name: '摊位费', color: '#B97A12' },
-        { id: 't3', name: '交通搬运', color: '#3E6FA8' },
-        { id: 't4', name: '损耗折价', color: '#C24A38' },
-        { id: 't5', name: '其他杂费', color: '#9B978D' }
+        { id: 't1', name: '进货成本', color: '#1677FF' },
+        { id: 't2', name: '摊位费', color: '#F79009' },
+        { id: 't3', name: '交通搬运', color: '#12B76A' },
+        { id: 't4', name: '损耗折价', color: '#F04438' },
+        { id: 't5', name: '其他杂费', color: '#A3AEC2' }
       ],
       hiddenCost: {
         loss: { low: 5, high: 10, mid: 7 },    // 货品损耗率 %（无冷链环境更高）
