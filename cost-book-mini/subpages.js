@@ -39,6 +39,8 @@
     h += '<div class="c-sheet is-show" id="pickerSheet" style="z-index:75;">';
     h += '<div class="c-sheet__grab"></div>';
     h += '<div class="c-sheet__title">选择日期 · ' + DATE.year + ' 年 ' + DATE.month + ' 月</div>';
+    /* U10：演示限定本月，明确提示避免困惑 */
+    h += '<div style="font-size:10.5px;color:var(--c-ink-3);padding:0 6px 2px;">演示环境仅支持 ' + DATE.year + ' 年 ' + DATE.month + ' 月</div>';
     h += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px;color:var(--c-ink-3);padding:2px 6px;">';
     ['日', '一', '二', '三', '四', '五', '六'].forEach(function (w) { h += '<div>' + w + '</div>'; });
     h += '</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;padding:8px 6px 12px;">';
@@ -260,11 +262,11 @@
     }
   }
 
-  // 凭证动作面板：拍照 / 相册 → 生成假缩略图；查看模板 → 提示
+  // 凭证动作面板：拍照 / 相册 → 生成假缩略图；查看模板 → 提示（U9：标注演示）
   function openReceiptSheet() {
     App.sheet([
-      { icon: 'camera', label: '拍照上传', onClick: function () { formState.attach = true; renderReceipt(); } },
-      { icon: 'image-plus', label: '从相册选择', onClick: function () { formState.attach = true; renderReceipt(); } },
+      { icon: 'camera', label: '拍照上传（演示）', onClick: function () { formState.attach = true; renderReceipt(); } },
+      { icon: 'image-plus', label: '从相册选择（演示）', onClick: function () { formState.attach = true; renderReceipt(); } },
       { icon: 'info', label: '查看模板', onClick: function () { App.toast('凭证需包含商户名与金额（演示）'); } }
     ], '添加凭证');
   }
@@ -727,8 +729,9 @@
     var price = round2(parseFloat(addModalEl.querySelector('#bomPrice').value));
     if (!name) { App.toast('请填写' + (App.industryNoun && App.industryNoun() === '菜品' ? '用料' : '成本项') + '名称'); return; }
     if (!(price > 0)) { App.toast('请填写正确的单价'); return; }
-    // 演示简化：amount = 单价
-    var item = { name: name, spec: spec, qty: qty, price: price, amount: price };
+    /* C8：金额 = 单价 × 数量（解析 qty 中数字，如"2 份"→2；无数字默认 1） */
+    var qtyNum = parseFloat(String(qty).replace(/[^\d.]/g, '')) || 1;
+    var item = { name: name, spec: spec, qty: qty, price: price, amount: round2(price * qtyNum) };
     closeAddModal();
     // API 替换点：POST /api/products/:id/bom
     api.addBomItem(App.ctx.productId, item).then(function (res) {
@@ -816,7 +819,13 @@
     /* 环比提示条（与上一期相邻差值，无上一期不显示） */
     h += ratioDeltaBar(r);
 
-    /* 成本明细表 */
+    /* 成本明细表（C6：分类环比 delta 由相邻期 pct 实时计算，不再依赖手写值） */
+    var prevMap = {};
+    var rIdx = -1;
+    for (var i = 0; i < DB.reports.length; i++) { if (DB.reports[i].id === r.id) { rIdx = i; break; } }
+    if (rIdx >= 0 && DB.reports[rIdx + 1]) {
+      DB.reports[rIdx + 1].items.forEach(function (p) { prevMap[p.cat] = Number(p.pct) || 0; });
+    }
     h += '<div class="c-card"><div class="sec-title" style="margin-top:0;"><span>成本明细</span></div>';
     h += '<table class="c-table"><thead><tr><th>分类</th><th>金额</th><th>占比</th><th>环比</th></tr></thead><tbody>';
     var sumAmt = 0;
@@ -824,11 +833,15 @@
     r.items.forEach(function (it) {
       sumAmt += Number(it.amount) || 0;
       sumPct += Number(it.pct) || 0;
+      /* 实时环比：本期 pct − 上期同分类 pct；无上期数据时回退手写字段 */
+      var delta = (prevMap[it.cat] != null)
+        ? Math.round((Number(it.pct) - prevMap[it.cat]) * 10) / 10
+        : (Number(it.delta) || 0);
       h += '<tr>' +
         '<td style="font-family:var(--f-body);">' + catDot(it.cat) + '<span style="vertical-align:middle;">' + esc(it.cat) + '</span></td>' +
         '<td>¥' + fmtMoney0(it.amount) + '</td>' +
         '<td>' + fmtPct(it.pct) + '%</td>' +
-        '<td>' + deltaCell(it.delta) + '</td></tr>';
+        '<td>' + deltaCell(delta) + '</td></tr>';
     });
     h += '<tr>' +
       '<td class="num" style="font-family:var(--f-body);">合计</td>' +

@@ -186,7 +186,8 @@
       var coldHealth = 76;
 
       var lossAmt = catTotal(['损耗', '报损']);
-      var amtRatio = lossAmt && rev ? lossAmt / (lossAmt + rev) * 100 : 0;
+      /* C9：金额损耗率 = 损耗金额 ÷ 销售额（原分母 lossAmt+rev 口径错误，rev 为 0 时记 0） */
+      var amtRatio = rev > 0 ? lossAmt / rev * 100 : 0;
 
       return [
         item('loss', '商品损耗', 'leaf', loss,

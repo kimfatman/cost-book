@@ -308,18 +308,19 @@
       '<div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--c-ink-3);">' +
       '<span class="t-num">已用 ¥' + money0(m.cost) + '</span><span class="t-num">预算 ¥' + money0(store.budget) + '</span></div></div>';
 
-    /* KPI 卡片 */
+    /* KPI 卡片（U6：好指标上涨用品牌色，坏指标成本率上涨用警示色） */
     h += '<div style="display:flex;gap:10px;margin-top:12px;">';
     var kpis = [
-      { label: '收入', val: '¥' + money0(m.revenue), delta: '+' + m.revenueDelta + '%', up: true, ic: 'trending-up' },
-      { label: '毛利', val: '¥' + money0(m.profit), delta: '+' + m.profitDelta + '%', up: true, ic: 'trending-up' },
-      { label: '成本率', val: pct(m.ratio) + '%', delta: '+' + m.ratioDelta + 'pp', up: false, ic: 'trending-up' }
+      { label: '收入', val: '¥' + money0(m.revenue), delta: '+' + m.revenueDelta + '%', good: true },
+      { label: '毛利', val: '¥' + money0(m.profit), delta: '+' + m.profitDelta + '%', good: true },
+      { label: '成本率', val: pct(m.ratio) + '%', delta: '+' + m.ratioDelta + 'pp', good: false }
     ];
     kpis.forEach(function (k) {
+      var deltaColor = k.good ? 'var(--c-brand)' : 'var(--c-danger)';
       h += '<div class="c-card" style="flex:1;padding:12px 13px;">' +
-        '<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--c-ink-3);">' + ic(k.ic, 12) + k.label + '</div>' +
+        '<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--c-ink-3);">' + ic('trending-up', 12) + k.label + '</div>' +
         '<div class="t-num" style="font-size:17px;font-weight:800;margin-top:5px;">' + k.val + '</div>' +
-        '<div class="t-num" style="font-size:10px;font-weight:700;color:' + (k.up ? 'var(--c-danger)' : 'var(--c-ink-3)') + ';margin-top:3px;">' + k.delta + ' 环比</div></div>';
+        '<div class="t-num" style="font-size:10px;font-weight:700;color:' + deltaColor + ';margin-top:3px;">' + k.delta + ' 环比</div></div>';
     });
     h += '</div>';
 
@@ -407,7 +408,7 @@
 
     /* 筛选条 */
     h += '<div class="filterbar">' +
-      '<div class="c-search">' + ic('search') + '<input id="recSearch" placeholder="搜索商户 / 备注" value="' + recordState.keyword + '"></div>' +
+      '<div class="c-search">' + ic('search') + '<input id="recSearch" placeholder="搜索商户 / 备注" value="' + esc(recordState.keyword) + '"></div>' +
       '<button class="c-btn c-btn--ghost c-btn--md" id="recFilterBtn">' + ic('filter') + ' 筛选</button></div>';
 
     /* 类型分段 + 分类 chips */
@@ -418,7 +419,7 @@
     h += '<div class="chips" style="margin-bottom:4px;" id="recCatChips">' +
       '<button class="c-chip' + (recordState.cat === '全部' ? ' is-active' : '') + '" data-c="全部">全部</button>';
     DB.categories.forEach(function (c) {
-      h += '<button class="c-chip' + (recordState.cat === c.name ? ' is-active' : '') + '" data-c="' + c.name + '"><span style="width:7px;height:7px;border-radius:2px;background:' + c.color + ';display:inline-block;"></span>' + c.name + '</button>';
+      h += '<button class="c-chip' + (recordState.cat === c.name ? ' is-active' : '') + '" data-c="' + esc(c.name) + '"><span style="width:7px;height:7px;border-radius:2px;background:' + c.color + ';display:inline-block;"></span>' + esc(c.name) + '</button>';
     });
     h += '</div>';
 
@@ -651,7 +652,12 @@
         '<span class="amt t-num">¥' + money0(s.amount) + '</span>' +
         '<span class="pct">' + pct(s.pct) + '%</span></div>';
     });
-    h += '<div class="row"><span class="dot" style="background:var(--c-ink-3);"></span><span class="name">其他 2 项</span><span class="amt t-num">¥' + money0(share[5].amount + share[6].amount) + '</span><span class="pct">' + pct(share[5].pct + share[6].pct) + '%</span></div>';
+    /* U8：其余分类动态求和，share 长度小于 7 时也不越界 */
+    var restAmt = 0, restPct = 0;
+    share.slice(5).forEach(function (s) { restAmt += Number(s.amount) || 0; restPct += Number(s.pct) || 0; });
+    if (share.length > 5) {
+      h += '<div class="row"><span class="dot" style="background:var(--c-ink-3);"></span><span class="name">其他 ' + (share.length - 5) + ' 项</span><span class="amt t-num">¥' + money0(restAmt) + '</span><span class="pct">' + pct(restPct) + '%</span></div>';
+    }
     h += '</div></div>';
     /* U4：分段切换时明确构成模块口径，避免其余模块被误读为所选期 */
     h += '<div style="font-size:10.5px;color:var(--c-ink-3);margin-top:10px;padding-top:8px;border-top:1px solid var(--c-line);">以上为' + per.label + '成本构成；趋势 / TOP5 / 供应商 / 隐性成本为当前月数据</div>';
@@ -689,7 +695,10 @@
     var noun = industryNoun();
     var h = '<div class="sec-title"><span>成本 TOP5 ' + noun + '</span><button class="link c-btn" data-navto="product">' + ic('chevron-right') + '全部' + noun + '</button></div>';
     h += '<div class="c-card" style="padding:6px 15px;">';
-    var maxCost = 25;
+    /* U8：条形宽度基准动态取最大值，避免新增高成本菜品溢出 */
+    var maxCost = 0;
+    top.forEach(function (t) { maxCost = Math.max(maxCost, Number(t.cost) || 0); });
+    if (maxCost <= 0) maxCost = 25;
     top.forEach(function (t, i) {
       var w = Math.round(t.cost / maxCost * 100);
       h += '<div class="cost-row"><div style="width:20px;flex:none;text-align:center;font-size:12px;font-weight:800;color:' + (i < 3 ? 'var(--c-brand)' : 'var(--c-ink-3)') + ';">' + (i + 1) + '</div>' +

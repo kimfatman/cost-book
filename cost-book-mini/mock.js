@@ -145,13 +145,13 @@ window.DB = {
     cur: { label: '本月', cost: 128640, revenue: 214300, ratio: 60.0, ratioDelta: 1.0 },
     last: { label: '上月', cost: 116980, revenue: 198400, ratio: 58.96, ratioDelta: 1.5 }
   },
-  // TOP5 高成本菜品（ratio 为成本率，与 products 口径一致）
+  // TOP5 高成本菜品（ratio 为成本率，与 products 口径一致；delta = 单位成本环比，与 history 末两位差一致）
   topProducts: [
-    { name: '水煮鱼', cost: 24.6, ratio: 36.2, delta: -1.5 },
-    { name: '酸菜鱼', cost: 23.8, ratio: 36.1, delta: -0.4 },
+    { name: '水煮鱼', cost: 24.6, ratio: 36.2, delta: -0.6 },
+    { name: '酸菜鱼', cost: 23.8, ratio: 36.1, delta: -0.1 },
     { name: '毛血旺', cost: 22.9, ratio: 39.5, delta: -0.3 },
     { name: '回锅肉', cost: 17.4, ratio: 41.4, delta: -0.1 },
-    { name: '口水鸡', cost: 12.1, ratio: 33.6, delta: -0.5 }
+    { name: '口水鸡', cost: 12.1, ratio: 33.6, delta: -0.1 }
   ],
   // 供应商（本月应付合计 = 86,240）
   suppliers: [
@@ -166,13 +166,13 @@ window.DB = {
   reports: [
     { id: 'R202606', month: '2026-06', label: '2026 年 6 月', totalCost: 116980, revenue: 198400, margin: 81420, ratio: 58.96, status: '已生成',
       items: [
-        { cat: '食材采购', amount: 56240, pct: 48.1, delta: -0.6 },
+        { cat: '食材采购', amount: 56240, pct: 48.1, delta: 0.9 },
         { cat: '人力工资', amount: 27600, pct: 23.6, delta: 0.4 },
-        { cat: '房租水电', amount: 15020, pct: 12.8, delta: 0 },
+        { cat: '房租水电', amount: 15020, pct: 12.8, delta: -0.4 },
         { cat: '营销推广', amount: 9200, pct: 7.9, delta: 0.8 },
         { cat: '物流仓储', amount: 4230, pct: 3.6, delta: -0.2 },
         { cat: '设备折旧', amount: 2890, pct: 2.5, delta: 0 },
-        { cat: '其他', amount: 1800, pct: 1.5, delta: -0.4 }
+        { cat: '其他', amount: 1800, pct: 1.5, delta: -1.5 }
       ] },
     { id: 'R202605', month: '2026-05', label: '2026 年 5 月', totalCost: 114200, revenue: 198800, margin: 84600, ratio: 57.44, status: '已生成',
       items: [
